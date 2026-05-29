@@ -2,13 +2,17 @@ package com.chess;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+
 import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpHandler;
 
 import com.chess.http.handler.ChessHandler;
 
 public class App {
-    public static void main(String[] args) {
-        HttpServer server = new HttpServer(new InetSocketAdress(8080, null));
+    public static void main(String[] args) throws IOException {
+        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 50);
         server.createContext("/api/chess", new ChessHandler());
+        server.start();
+        System.out.println("Server started on port 8080");
     }
 }
