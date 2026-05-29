@@ -18,6 +18,8 @@ public class ChessHandler extends BaseHandler {
         String method = exchange.getRequestMethod();
         int id = extractIdFromPath(exchange, BASE_PATH);
 
-        sendJson(exchange, 200, "Hello, World!");
+        if ("GET".equalsIgnoreCase(method) && id == -1) {
+            sendJson(exchange, 200, "Hello, World!");
+        }
     }
 }

@@ -2,16 +2,24 @@ package com.chess.model;
 
 public abstract class Piece {
     private String name;
-    private int[][] position;
+    protected int line;
+    protected int column;
+    private boolean white;
 
-    public Piece(String name, int[][] position) {
+    public Piece(String name, int line, int column, boolean white) {
         this.name = name;
-        this.position = position;
+        this.line = line;
+        this.column = column;
+        this.white = white;
     }
 
-    public abstract void Move(int[][] finalPosition);
+    public abstract void move(int[][] finalPosition, boolean white);
 
-    public int[][] getPosition() {
-        return position;
+    public int getLine() {
+        return line;
+    }
+
+    public int getColumn() {
+        return column;
     }
 }
