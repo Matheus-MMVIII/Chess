@@ -1,6 +1,19 @@
 package com.chess.http.handler;
 
-public abstract BaseHandler implements HttpHandler {
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
+
+import java.util.Locale;
+
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+
+import com.chess.exception.BadRequestException;
+
+public abstract class BaseHandler implements HttpHandler {
 
     @Override
     public final void handle(HttpExchange exchange) throws IOException {
@@ -18,9 +31,27 @@ public abstract BaseHandler implements HttpHandler {
     protected String requireJsonBody(HttpExchange exchange) throws IOException {
         String contentType = exchange.getRequestHeaders().getFirst("Content-Type");
         if (contentType == null || !contentType.toLowerCase(Locale.ROOT).contains("application/json")) {
-            throw new BadRequestException("Content-Type must be application/json.");
+            throw new BadRequestException("Content-Type must be application/json. ");
         }
-        return HttpExchangeHelper.readRequestBody(exchange);
+        return readRequestBody(exchange);
+    }
+
+    public static String readRequestBody(HttpExchange exchange) throws IOException {
+        int maxBytes = 8192;
+        try (InputStream inputStream = exchange.getRequestBody();
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            int totalBytes = 0;
+
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                totalBytes += bytesRead;
+                if (totalBytes > maxBytes)
+                    throw new BadRequestException("The request body exceeds the allowed limit. ");
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            return outputStream.toString(StandardCharsets.UTF_8);
+        }
     }
 
     protected int extractIdFromPath(HttpExchange exchange, String basePath) {
@@ -33,7 +64,7 @@ public abstract BaseHandler implements HttpHandler {
             throw new BadRequestException("Invalid route.");
         }
 
-        int idSegment = path.substring(basePath.length() + 1);
+        String idSegment = path.substring(basePath.length() + 1);
         if (idSegment.contains("/")) {
             throw new BadRequestException("Invalid route.");
         }
@@ -55,6 +86,18 @@ public abstract BaseHandler implements HttpHandler {
 
     public static void sendMethodNotAllowed(HttpExchange exchange, String allowedMethods) throws IOException {
         exchange.getResponseHeaders().set("Allow", allowedMethods);
-        sendJson(exchange, 405, JsonUtil.error("This method is not permitted."));
+        sendJson(exchange, 405, error("This method is not permitted."));
+    }
+
+    public static String error(String message) {
+        return "{\"error\":\"" + escape(message) + "\"}";
+    }
+
+    private static String escape(String value) {
+        return value
+                .replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r");
     }
 }
