@@ -1,5 +1,7 @@
 package com.chess.model;
 
+import com.chess.exception.BadRequestException;
+
 public class Table {
   private static Piece[][] table = new Piece[8][8];
 
@@ -70,8 +72,7 @@ public class Table {
   }
 
   public void move(int startLine, int startColumn, int endLine, int endColumn) {
-    if (getPosNull(startLine, startColumn))
-      throw new IllegalArgumentException("Peca nao encontrada. ");
+    if (getPosNull(startLine, startColumn)) throw new BadRequestException("Peca nao encontrada. ");
     table[startLine][startColumn].move(endLine, endColumn, this);
     printBoard();
   }
