@@ -1,7 +1,7 @@
 package com.chess.model;
 
 public abstract class Piece {
-    private char type;
+    private final char type;
     protected int line;
     protected int column;
     protected boolean white;

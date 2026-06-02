@@ -1,5 +1,7 @@
 package com.chess.model;
 
+import com.chess.exception.BadRequestException;
+
 public class Pawn extends Piece {
     public Pawn(char type, int line, int column, boolean white) {
         super(type, line, column, white);
@@ -7,33 +9,26 @@ public class Pawn extends Piece {
     @Override
     public void move(int endLine, int endColumn, Table table) {
         if (column != endColumn)
-            throw new IllegalArgumentException("Tentativa de movimentacao fora do escopo da peca. ");
+            throw new BadRequestException("Invalid transaction attempt. ");
 
-        if (white) {
-            if (line == 6) {
-                if (endLine < (line-2) || endLine >= line)
-                    throw new IllegalArgumentException("Tentativa de movimentacao fora do escopo da peca. ");
+        int direction = white ? -1 : 1;
+        int startLine = white ? 6 : 1;
 
-                if (!(table.getPosNull((endLine-1), endColumn)))
-                    throw new IllegalArgumentException("Tentativa de mover peca por cima de outra peca. ");
-            }else {
-                if (endLine < (line-1) || endLine >= line)
-                    throw new IllegalArgumentException("Tentativa de movimentacao fora do escopo da peca no momento. ");
-            }
+        boolean firstMove = line == startLine;
+        int maxMove = firstMove ? 2 : 1;
 
+        int distance = (endLine - line) * direction;
 
-        }else {
-            if (line == 1) {
-                if (endLine > (line+2) || endLine <= line)
-                    throw new IllegalArgumentException("Tentativa de movimentacao fora do escopo da peca. ");
+        if (distance <= 0 || distance > maxMove)
+            throw new BadRequestException("Invalid movement attempt. ");
 
-                if (!(table.getPosNull((endLine+1), endColumn)))
-                    throw new IllegalArgumentException("Tentativa de mover peca por cima de outra peca. ");
-            }else {
-                if (endLine > (line+1) || endLine <= line)
-                    throw new IllegalArgumentException("Tentativa de movimentacao fora do escopo da peca no momento. ");
-            }
+        if (distance == 2) {
+            int middleLine = line + direction;
+
+            if (!table.getPosNull(middleLine, column))
+                throw new BadRequestException("Attempt to move a piece over another. ");
         }
+
         table.removePos(line, column);
         line = endLine;
         column = endColumn;
