@@ -3,12 +3,15 @@ package com.chess.model;
 import com.chess.exception.BadRequestException;
 
 public class Bishop extends Piece {
-    public Bishop(char type, int line, int column, boolean white) {
-        super(type, line, column, white);
+    public Bishop(char type, int line, int column, boolean white, Table table) {
+        super(type, line, column, white, table);
     }
 
     @Override
-    public void move(int endLine, int endColumn, Table table) {
+    public void move(int endLine, int endColumn) {
+        if (haveFriend(endLine, endColumn))
+            throw new BadRequestException("Attempt to move a piece inside another friend piece. ");
+
         if (!isInsideBoard(line, column))
             throw new BadRequestException("Attempt to move a piece outside board. ");
 

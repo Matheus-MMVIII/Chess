@@ -41,22 +41,22 @@ public class Table {
       for (int j = 0; j < table[i].length; j++) {
         if (i == 0) {
           switch (j) {
-            case 0, 7 -> table[i][j] = new Rook('R', i, j, false);
-            //case 1, 6 -> table[i][j] = 'C';
-            case 2, 5 -> table[i][j] = new Bishop('B', i, j, false);
+            case 0, 7 -> table[i][j] = new Rook('R', i, j, false, this);
+            case 1, 6 -> table[i][j] = new Knight('K', i, j, false, this);
+            case 2, 5 -> table[i][j] = new Bishop('B', i, j, false, this);
             //case 3 -> table[i][j] = 'Q';
             //case 4 -> table[i][j] = 'R';
           }
         }else if (i == 1) {
-          table[i][j] = new Pawn('P', i, j, false);
+          table[i][j] = new Pawn('P', i, j, false, this);
 
         }else if (i == 6) {
-          table[i][j] = new Pawn('p', i, j, true);
+          table[i][j] = new Pawn('p', i, j, true, this);
         }else if (i == 7) {
           switch (j) {
-            case 0, 7 -> table[i][j] = new Rook('r', i, j, true);
-            //case 1, 6 -> table[i][j] = 'c';
-            case 2, 5 -> table[i][j] = new Bishop('b', i, j, true);
+            case 0, 7 -> table[i][j] = new Rook('r', i, j, true, this);
+            case 1, 6 -> table[i][j] = new Knight('k', i, j, true, this);
+            case 2, 5 -> table[i][j] = new Bishop('b', i, j, true, this);
             //case 3 -> table[i][j] = 'q';
             //case 4 -> table[i][j] = 'r';
           }
@@ -70,6 +70,10 @@ public class Table {
     return table[posLine][posColumn] == null;
   }
 
+  public boolean haveFriendPiece(int posLine, int posColumn, boolean white) {
+    return table[posLine][posColumn].getIsWhite() == white;
+  }
+
   public void registerPos(int posLine, int posColumn, Piece piece) {
     table[posLine][posColumn] = piece;
   }
@@ -80,7 +84,7 @@ public class Table {
 
   public void move(int startLine, int startColumn, int endLine, int endColumn) {
     if (getPosNull(startLine, startColumn)) throw new NotFoundException("Piece not found. ");
-    table[startLine][startColumn].move(endLine, endColumn, this);
+    table[startLine][startColumn].move(endLine, endColumn);
     printBoard();
   }
 }
