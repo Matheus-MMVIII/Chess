@@ -43,7 +43,7 @@ public class Table {
           switch (j) {
             case 0, 7 -> table[i][j] = new Rook('R', i, j, false);
             //case 1, 6 -> table[i][j] = 'C';
-            //case 2, 5 -> table[i][j] = 'B';
+            case 2, 5 -> table[i][j] = new Bishop('B', i, j, false);
             //case 3 -> table[i][j] = 'Q';
             //case 4 -> table[i][j] = 'R';
           }
@@ -56,7 +56,7 @@ public class Table {
           switch (j) {
             case 0, 7 -> table[i][j] = new Rook('r', i, j, true);
             //case 1, 6 -> table[i][j] = 'c';
-            //case 2, 5 -> table[i][j] = 'b';
+            case 2, 5 -> table[i][j] = new Bishop('b', i, j, true);
             //case 3 -> table[i][j] = 'q';
             //case 4 -> table[i][j] = 'r';
           }
