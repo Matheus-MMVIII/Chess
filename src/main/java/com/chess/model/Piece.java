@@ -1,5 +1,7 @@
 package com.chess.model;
 
+import com.chess.exception.BadRequestException;
+
 public abstract class Piece {
     private final char type;
     protected int line;
@@ -8,9 +10,11 @@ public abstract class Piece {
 
     public Piece(char type, int line, int column, boolean white) {
         this.type = type;
+        this.white = white;
+        if (!isInsideBoard(line, column))
+            throw new BadRequestException("Invalid create piece position. ");
         this.line = line;
         this.column = column;
-        this.white = white;
     }
 
     public char getType() {
@@ -25,5 +29,9 @@ public abstract class Piece {
 
     public int getColumn() {
         return column;
+    }
+
+    public boolean isInsideBoard(int line, int column) {
+        return line >= 0 && line <= 7 && column >= 0 && column <= 7;
     }
 }

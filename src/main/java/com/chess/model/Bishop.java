@@ -9,6 +9,9 @@ public class Bishop extends Piece {
 
     @Override
     public void move(int endLine, int endColumn, Table table) {
+        if (!isInsideBoard(line, column))
+            throw new BadRequestException("Attempt to move a piece outside board. ");
+
         if (Math.abs(endLine - line) != Math.abs(endColumn - column))
             throw new BadRequestException("Invalid transaction attempt. ");
 
