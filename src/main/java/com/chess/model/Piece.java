@@ -6,7 +6,7 @@ public abstract class Piece {
     private final char type;
     protected int line;
     protected int column;
-    private boolean white;
+    private final boolean white;
     protected Table table;
 
     public Piece(char type, int line, int column, boolean white, Table table) {
