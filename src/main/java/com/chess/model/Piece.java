@@ -17,7 +17,7 @@ public abstract class Piece {
         return type;
     }
 
-    public abstract void move(int endColumn, int endLine, Table table);
+    public abstract void move(int endLine, int endColumn, Table table);
 
     public int getLine() {
         return line;

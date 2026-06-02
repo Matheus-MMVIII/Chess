@@ -5,6 +5,13 @@ import com.chess.exception.NotFoundException;
 public class Table {
   private static Piece[][] table = new Piece[8][8];
 
+  //k = King
+  //q = queen
+  //b = bishop
+  //k = knight
+  //r = rook
+  //p = pawn
+
   public Table() {
     generateBoard();
     printBoard();
@@ -34,7 +41,7 @@ public class Table {
       for (int j = 0; j < table[i].length; j++) {
         if (i == 0) {
           switch (j) {
-            //case 0, 7 -> table[i][j] = 'T';
+            case 0, 7 -> table[i][j] = new Rook('R', i, j, false);
             //case 1, 6 -> table[i][j] = 'C';
             //case 2, 5 -> table[i][j] = 'B';
             //case 3 -> table[i][j] = 'Q';
@@ -47,7 +54,7 @@ public class Table {
           table[i][j] = new Pawn('p', i, j, true);
         }else if (i == 7) {
           switch (j) {
-            //case 0, 7 -> table[i][j] = 't';
+            case 0, 7 -> table[i][j] = new Rook('r', i, j, true);
             //case 1, 6 -> table[i][j] = 'c';
             //case 2, 5 -> table[i][j] = 'b';
             //case 3 -> table[i][j] = 'q';
