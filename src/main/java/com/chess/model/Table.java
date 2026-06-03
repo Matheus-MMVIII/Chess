@@ -17,6 +17,20 @@ public class Table {
     printBoard();
   }
 
+  public String[] getBoard() {
+    String[] board = new String[8];
+    //StringBuilder board = new StringBuilder();
+    for (int i = 0; i < table.length; i++) {
+      for (int j = 0; j < table[i].length; j++) {
+        if (table[i][j] != null)
+          board[i] += table[i][j].getType();
+        else
+          board[i] += '.';
+      }
+    }
+    return board;
+  }
+
   private void printBoard() {
     System.out.print(" ");
     for (int a = 0; a < table.length; a++) {
