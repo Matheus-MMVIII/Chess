@@ -21,12 +21,17 @@ public class Table {
     String[] board = new String[8];
     //StringBuilder board = new StringBuilder();
     for (int i = 0; i < table.length; i++) {
+      board[i] = "";
       for (int j = 0; j < table[i].length; j++) {
-        if (table[i][j] != null)
+        if (table[i][j] != null) {
           board[i] += table[i][j].getType();
-        else
+        }else {
           board[i] += '.';
+        }
       }
+    }
+    for (String line : board) {
+      System.out.println(line);
     }
     return board;
   }
