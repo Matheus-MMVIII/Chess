@@ -2,8 +2,8 @@ package com.chess.model;
 
 import com.chess.exception.BadRequestException;
 
-public class Knight extends Piece {
-    public Knight(char type, int line, int column, boolean white, Table table) {
+public class Horse extends Piece {
+    public Horse(char type, int line, int column, boolean white, Table table) {
         super(type, line, column, white, table);
     }
 

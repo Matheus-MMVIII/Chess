@@ -8,7 +8,7 @@ public class Table {
   //k = King
   //q = queen
   //b = bishop
-  //k = knight
+  //k = knight/horse
   //r = rook
   //p = pawn
 
@@ -42,10 +42,10 @@ public class Table {
         if (i == 0) {
           switch (j) {
             case 0, 7 -> table[i][j] = new Rook('R', i, j, false, this);
-            case 1, 6 -> table[i][j] = new Knight('K', i, j, false, this);
+            case 1, 6 -> table[i][j] = new Horse('H', i, j, false, this);
             case 2, 5 -> table[i][j] = new Bishop('B', i, j, false, this);
-            //case 3 -> table[i][j] = 'Q';
-            //case 4 -> table[i][j] = 'R';
+            case 3 -> table[i][j] = new Queen('Q', i, j, false, this);
+            case 4 -> table[i][j] = new King('K', i, j, false, this);
           }
         }else if (i == 1) {
           table[i][j] = new Pawn('P', i, j, false, this);
@@ -55,10 +55,10 @@ public class Table {
         }else if (i == 7) {
           switch (j) {
             case 0, 7 -> table[i][j] = new Rook('r', i, j, true, this);
-            case 1, 6 -> table[i][j] = new Knight('k', i, j, true, this);
+            case 1, 6 -> table[i][j] = new Horse('h', i, j, true, this);
             case 2, 5 -> table[i][j] = new Bishop('b', i, j, true, this);
-            //case 3 -> table[i][j] = 'q';
-            //case 4 -> table[i][j] = 'r';
+            case 3 -> table[i][j] = new Queen('q', i, j, true, this);
+            case 4 -> table[i][j] = new King('k', i, j, true, this);
           }
         }else
           table[i][j] = null;
@@ -71,6 +71,8 @@ public class Table {
   }
 
   public boolean haveFriendPiece(int posLine, int posColumn, boolean white) {
+    if (table[posLine][posColumn] == null)
+      return false;
     return table[posLine][posColumn].getIsWhite() == white;
   }
 
