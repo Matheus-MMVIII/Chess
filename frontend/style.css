@@ -1,0 +1,21 @@
+.pieces {
+    display: grid;
+    grid-template-columns: repeat(8, 80px);
+    grid-template-rows: repeat(8, 80px);
+    width: 640px;
+    height: 640px;
+}
+
+.pieces > a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.piece-back-white {
+    background-color: #caf0b5;
+}
+
+.piece-back-black {
+    background-color: #81b563;
+}

@@ -1,7 +1,7 @@
 async function loadChess() {
     const url = "http://localhost:8080/api/chess/";
     table = document.getElementById("table");
-    let tableText = ``;
+    let tableText = `<div class="pieces">`;
 
     try {
         const response = await fetch(url);
@@ -13,12 +13,23 @@ async function loadChess() {
         console.log(result);
 
         for (i = 1; i <= 8; i++) {
-            tableText += `<div class="line">`;
-            for (j = 0; j <= 7; j++) {
-                tableText += `<a class="piece">${result["line" + i][j]}</a>`;
+            if (i % 2 === 0) {
+                for (j = 0; j <= 7; j++) {
+                    if (j % 2 === 0) {
+                        tableText += `<a class="piece-back-white">${result["line" + i][j]}</a>`;
+                    } else
+                        tableText += `<a class="piece-back-black">${result["line" + i][j]}</a>`;
+                }
+            }else {
+                for (j = 0; j <= 7; j++) {
+                    if (j % 2 !== 0) {
+                        tableText += `<a class="piece-back-white">${result["line" + i][j]}</a>`;
+                    } else
+                        tableText += `<a class="piece-back-black">${result["line" + i][j]}</a>`;
+                }
             }
-            tableText += `</div>`;
         }
+        tableText += `</div>`;
         table.innerHTML = tableText;
     } catch (error) {
         console.error(error.message);
