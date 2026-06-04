@@ -17,21 +17,23 @@ public class Table {
     printBoard();
   }
 
-  public String[] getBoard() {
-    String[] board = new String[8];
+  public String[][] getBoard() {
+    String[][] board = new String[8][8];
     //StringBuilder board = new StringBuilder();
     for (int i = 0; i < table.length; i++) {
-      board[i] = "";
       for (int j = 0; j < table[i].length; j++) {
+        board[i][j] = "";
         if (table[i][j] != null) {
-          board[i] += table[i][j].getType();
+          board[i][j] += table[i][j].getType();
         }else {
-          board[i] += '.';
+          board[i][j] += '.';
         }
       }
     }
-    for (String line : board) {
-      System.out.println(line);
+    for (String[] line : board) {
+      for (String piece : line) {
+        System.out.println(piece);
+      }
     }
     return board;
   }

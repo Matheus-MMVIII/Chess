@@ -9,7 +9,7 @@ public class ChessService {
         table = new Table();
     }
 
-    public String[] getBoard() {
+    public String[][] getBoard() {
         return table.getBoard();
     }
 

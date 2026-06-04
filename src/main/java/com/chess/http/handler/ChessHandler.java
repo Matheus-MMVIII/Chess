@@ -28,7 +28,9 @@ public class ChessHandler extends BaseHandler {
         int id = extractIdFromPath(exchange, BASE_PATH);
 
         if ("GET".equalsIgnoreCase(method) && id == -1) {
-            sendJson(exchange, 200, JsonUtil.board(chessService.getBoard()));
+            String board = JsonUtil.board(chessService.getBoard());
+            System.out.println(board);
+            sendJson(exchange, 200, board);
         }
     }
 }
