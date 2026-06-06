@@ -1,17 +1,17 @@
 const pieces = {
-    r: ".images/white-rook.png",
-    h: "images/white-horse.png",
-    b: "images/white-bishop.png",
-    q: "images/white-queen.png",
-    k: "images/white-king.png",
-    p: "images/white-pawn.png",
+    r: "/images/white-rook.png",
+    h: "/images/white-horse.png",
+    b: "/images/white-bishop.png",
+    q: "/images/white-queen.png",
+    k: "/images/white-king.png",
+    p: "/images/white-pawn.png",
 
-    R: "images/black-rook.png",
-    H: "images/black-horse.png",
-    B: "images/black-bishop.png",
-    Q: "images/black-queen.png",
-    K: "images/black-king.png",
-    P: "images/black-pawn.png"
+    R: "/images/black-rook.png",
+    H: "/images/black-horse.png",
+    B: "/images/black-bishop.png",
+    Q: "/images/black-queen.png",
+    K: "/images/black-king.png",
+    P: "/images/black-pawn.png"
 };
 
 async function loadChess() {
@@ -35,7 +35,7 @@ async function loadChess() {
                         if (result["line" + i][j] === ".")
                             tableText += `<div class="piece-back-white"></div>`;
                         else
-                            tableText += `<div class="piece-back-white"><img src="${pieces[result["line" + i][j]]}"></div>`;
+                            tableText += `<div class="piece-back-white"><img src="http://localhost:8080/images/white-rook.png"></div>`;//"${pieces[result["line" + i][j]]}"></div>`;
                     } else {
                         if (result["line" + i][j] === ".")
                             tableText += `<div class="piece-back-black"></div>`;

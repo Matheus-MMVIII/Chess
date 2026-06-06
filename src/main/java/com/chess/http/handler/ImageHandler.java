@@ -8,6 +8,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class ImageHandler extends BaseHandler {
+
+    public ImageHandler() {
+
+    }
+
     @Override
     protected void handleRequest(HttpExchange exchange) throws IOException {
         String uri = exchange.getRequestURI().getPath();
