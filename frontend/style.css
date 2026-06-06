@@ -6,7 +6,11 @@
     height: 640px;
 }
 
-.pieces > a {
+.piece-back-white,
+.piece-back-black {
+    width: 80px;
+    height: 80px;
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -18,4 +22,12 @@
 
 .piece-back-black {
     background-color: #81b563;
+}
+
+.piece-back-white img,
+.piece-back-black img {
+    width: 72px;
+    height: 72px;
+
+    image-rendering: pixelated;
 }

@@ -35,7 +35,7 @@ async function loadChess() {
                         if (result["line" + i][j] === ".")
                             tableText += `<div class="piece-back-white"></div>`;
                         else
-                            tableText += `<div class="piece-back-white"><img src="http://localhost:8080/images/white-rook.png"></div>`;//"${pieces[result["line" + i][j]]}"></div>`;
+                            tableText += `<div class="piece-back-white"><img src="${pieces[result["line" + i][j]]}"></div>`;
                     } else {
                         if (result["line" + i][j] === ".")
                             tableText += `<div class="piece-back-black"></div>`;
@@ -65,3 +65,5 @@ async function loadChess() {
         console.error(error.message);
     }
 }
+
+loadChess();
