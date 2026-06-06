@@ -25,7 +25,7 @@ public class ImageHandler extends BaseHandler {
 
         byte[] imageBytes = Files.readAllBytes(imagePath);
 
-        exchange.getRequestHeaders().set("Content-Type", "image/png");
+        exchange.getResponseHeaders().set("Content-Type", "image/png");
         exchange.sendResponseHeaders(200, imageBytes.length);
 
         exchange.getResponseBody().write(imageBytes);
