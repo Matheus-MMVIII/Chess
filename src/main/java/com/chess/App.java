@@ -3,6 +3,7 @@ package com.chess;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
+import com.chess.http.handler.ImageHandler;
 import com.chess.model.Table;
 import com.chess.service.ChessService;
 import com.sun.net.httpserver.HttpServer;
@@ -14,6 +15,7 @@ public class App {
     public static void main(String[] args) throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 50);
         server.createContext("/api/chess", new ChessHandler(new ChessService()));
+        server.createContext("/images", new ImageHandler());
         server.start();
         System.out.println("Server started on port 8080");
         /*

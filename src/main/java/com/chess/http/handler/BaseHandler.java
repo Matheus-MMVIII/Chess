@@ -20,6 +20,7 @@ public abstract class BaseHandler implements HttpHandler {
         try {
             handleRequest(exchange);
         } catch (Exception ex) {
+            System.out.println(ex);
             System.out.println(ex.getMessage());
         } finally {
             exchange.close();
