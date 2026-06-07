@@ -22,7 +22,7 @@ public class Rook extends Piece {
             int step = column < endColumn ? 1 : -1;
 
             for (int c = column + step; c != endColumn; c += step) {
-                if (!table.getPosNull(line, c))
+                if (!table.getPosIsNull(line, c))
                     throw new BadRequestException("Attempt to move a piece over another. ");
             }
 
@@ -30,7 +30,7 @@ public class Rook extends Piece {
             int step = line < endLine ? 1 : -1;
 
             for (int l = line + step; l != endLine; l += step) {
-                if (!table.getPosNull(l, column))
+                if (!table.getPosIsNull(l, column))
                     throw new BadRequestException("Attempt to move a piece over another. ");
             }
         }

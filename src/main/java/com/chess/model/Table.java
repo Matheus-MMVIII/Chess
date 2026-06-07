@@ -81,7 +81,7 @@ public class Table {
     }
   }
 
-  public boolean getPosNull(int posLine, int posColumn) {
+  public boolean getPosIsNull(int posLine, int posColumn) {
     return table[posLine][posColumn] == null;
   }
 
@@ -100,7 +100,7 @@ public class Table {
   }
 
   public void move(int startLine, int startColumn, int endLine, int endColumn) {
-    if (getPosNull(startLine, startColumn)) throw new NotFoundException("Piece not found. ");
+    if (getPosIsNull(startLine, startColumn)) throw new NotFoundException("Piece not found. ");
     table[startLine][startColumn].move(endLine, endColumn);
     printBoard();
   }

@@ -12,14 +12,17 @@ public class Pawn extends Piece {
         if (haveFriend(endLine, endColumn))
             throw new BadRequestException("Attempt to move a piece inside another friend piece. ");
 
-        if (!isInsideBoard(line, column))
+        if (!isInsideBoard(endLine, endColumn))
             throw new BadRequestException("Attempt to move a piece outside board. ");
 
-        if (column != endColumn)
+        if (column > (endColumn+1) || column < (endColumn-1))
             throw new BadRequestException("Invalid transaction attempt. ");
 
         int direction = getIsWhite() ? -1 : 1;
         int startLine = getIsWhite() ? 6 : 1;
+
+        if (column == endColumn && !table.getPosIsNull(endLine, endColumn))
+            throw new BadRequestException("Invalid movement attempt. ");
 
         boolean firstMove = line == startLine;
         int maxMove = firstMove ? 2 : 1;
@@ -27,14 +30,17 @@ public class Pawn extends Piece {
         int distance = (endLine - line) * direction;
 
         if (distance <= 0 || distance > maxMove)
-            throw new BadRequestException("Invalid movement attempt. ");
+            throw new BadRequestException("Currently, the movement is invalid.");
 
         if (distance == 2) {
             int middleLine = line + direction;
 
-            if (!table.getPosNull(middleLine, column))
+            if (!table.getPosIsNull(middleLine, column))
                 throw new BadRequestException("Attempt to move a piece over another. ");
         }
+
+        if (column != endColumn && table.getPosIsNull(endLine, endColumn))
+            throw new BadRequestException("Currently, invalid movement attempt. ");
 
         table.removePos(line, column);
         line = endLine;
