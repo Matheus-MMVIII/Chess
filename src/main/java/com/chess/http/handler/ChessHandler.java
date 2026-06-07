@@ -32,5 +32,11 @@ public class ChessHandler extends BaseHandler {
             System.out.println(board);
             sendJson(exchange, 200, board);
         }
+        if ("PUT".equalsIgnoreCase(method)) {
+            String json = requireJsonBody(exchange);
+            int[] pos = JsonUtil.getPos(json);
+            chessService.movePiece(pos[0], pos[1], pos[2], pos[3]);
+            sendJson(exchange, 200, JsonUtil.board(chessService.getBoard()));
+        }
     }
 }

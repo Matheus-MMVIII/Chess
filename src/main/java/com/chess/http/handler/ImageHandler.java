@@ -16,12 +16,10 @@ public class ImageHandler extends BaseHandler {
     @Override
     protected void handleRequest(HttpExchange exchange) throws IOException {
         String uri = exchange.getRequestURI().getPath();
-        System.out.println(uri);
 
         String imageName = uri.replace("/images/", "");
 
         Path imagePath = Path.of("images", imageName);
-        System.out.println(imagePath);
 
         if (!Files.exists(imagePath) || Files.isDirectory(imagePath)) {
             exchange.sendResponseHeaders(404, -1);
