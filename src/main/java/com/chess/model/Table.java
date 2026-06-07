@@ -19,7 +19,6 @@ public class Table {
 
   public String[][] getBoard() {
     String[][] board = new String[8][8];
-    //StringBuilder board = new StringBuilder();
     for (int i = 0; i < table.length; i++) {
       for (int j = 0; j < table[i].length; j++) {
         board[i][j] = "";
@@ -28,11 +27,6 @@ public class Table {
         }else {
           board[i][j] += '.';
         }
-      }
-    }
-    for (String[] line : board) {
-      for (String piece : line) {
-        System.out.println(piece);
       }
     }
     return board;
