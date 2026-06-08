@@ -1,9 +1,11 @@
 package com.chess.model;
 
+import com.chess.exception.BadRequestException;
 import com.chess.exception.NotFoundException;
 
 public class Table {
   private static Piece[][] table = new Piece[8][8];
+  private static boolean whiteTime = true;
 
   //k = King
   //q = queen
@@ -101,7 +103,10 @@ public class Table {
 
   public void move(int startLine, int startColumn, int endLine, int endColumn) {
     if (getPosIsNull(startLine, startColumn)) throw new NotFoundException("Piece not found. ");
+    if (table[startLine][startColumn].getIsWhite() != whiteTime) throw new BadRequestException("Is not your turn. ");
     table[startLine][startColumn].move(endLine, endColumn);
+    whiteTime = !whiteTime;
+    System.out.println("TurnWhite: "+whiteTime);
     printBoard();
   }
 }

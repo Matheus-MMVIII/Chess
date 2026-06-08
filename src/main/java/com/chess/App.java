@@ -19,21 +19,5 @@ public class App {
         server.createContext("/script.js", new JsHandler());
         server.start();
         System.out.println("Server started on port 8080");
-        /*
-        Table table = new Table();
-        table.move(1, 0, 3, 0);
-        table.move(0, 0, 2, 0);
-        table.move(2, 0, 2, 4);
-        table.move(1, 1, 2, 1);
-        table.move(0, 2, 2, 0);
-        table.move(0, 1, 2, 2);
-        table.move(2, 2, 3, 4);
-        table.move(0, 3, 0, 0);
-        table.move(0, 0, 4, 4);
-        table.move(0, 4, 0, 3);
-        table.move(0, 3, 0, 2);
-        table.move(0, 2, 1, 1);
-        table.move(1, 1, 2, 2);
-        */
     }
 }

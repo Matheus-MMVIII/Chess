@@ -6,12 +6,12 @@ const pieces = {
     k: "/images/white-king.png",
     p: "/images/white-pawn.png",
 
-    R: "/images/black-rook.png",
-    H: "/images/black-horse.png",
-    B: "/images/black-bishop.png",
-    Q: "/images/black-queen.png",
-    K: "/images/black-king.png",
-    P: "/images/black-pawn.png"
+    R: "/images/blue-rook.png",
+    H: "/images/blue-horse.png",
+    B: "/images/blue-bishop.png",
+    Q: "/images/blue-queen.png",
+    K: "/images/blue-king.png",
+    P: "/images/blue-pawn.png"
 };
 
 var initialLine = -1;
