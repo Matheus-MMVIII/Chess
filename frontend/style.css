@@ -11,9 +11,31 @@
     width: 80px;
     height: 80px;
 
+    border-width: 1px;
+
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.piece-select {
+    background-color: #a1c25a;
+
+    width: 80px;
+    height: 80px;
+
+    border-width: 1px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.piece-select img {
+    width: 72px;
+    height: 72px;
+
+    image-rendering: pixelated;
 }
 
 .piece-back-white {

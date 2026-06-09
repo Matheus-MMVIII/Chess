@@ -34,7 +34,9 @@ async function loadChess() {
         for (i = 0; i <= 7; i++) {
             if (i % 2 === 0) {
                 for (j = 0; j <= 7; j++) {
-                    if (j % 2 === 0) {
+                    if (i === initialLine && j === initialColumn && result[i][j] !== ".") {
+                        tableText += `<button onclick="movePiece(${i}, ${j}), setPos(${i}, ${j})" class="piece-select"><img src="${pieces[result[i][j]]}"></button>`;
+                    } else if (j % 2 === 0) {
                         if (result[i][j] === ".")
                             tableText += `<button onclick="movePiece(${i}, ${j}), setPos(${i}, ${j})" class="piece-back-white"></button>`;
                         else
@@ -48,7 +50,9 @@ async function loadChess() {
                 }
             }else {
                 for (j = 0; j <= 7; j++) {
-                    if (j % 2 !== 0) {
+                    if (i === initialLine && j === initialColumn && result[i][j] !== ".") {
+                        tableText += `<button onclick="movePiece(${i}, ${j}), setPos(${i}, ${j})" class="piece-select"><img src="${pieces[result[i][j]]}"></button>`;
+                    } else if (j % 2 !== 0) {
                         if (result[i][j] === ".")
                             tableText += `<button onclick="movePiece(${i}, ${j}), setPos(${i}, ${j})" class="piece-back-white"></button>`;
                         else
@@ -95,9 +99,10 @@ async function movePiece(endLine, endColumn) {
     }
 }
 
-function setPos(posLine, posColummn) {
+function setPos(posLine, posColumn) {
     initialLine = posLine;
-    initialColumn = posColummn;
+    initialColumn = posColumn;
+    loadChess();
 }
 
 loadChess();
