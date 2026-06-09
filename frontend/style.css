@@ -1,3 +1,7 @@
+body {
+    background-color: #302e2b;
+}
+
 .pieces {
     display: grid;
     grid-template-columns: repeat(8, 80px);
@@ -52,4 +56,13 @@
     height: 72px;
 
     image-rendering: pixelated;
+}
+
+#table {
+    width: 650px;
+    height: 650px;
+    background-color: #51280a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
