@@ -35,6 +35,7 @@ public class Rook extends Piece {
             }
         }
 
+        firstMove();
         table.removePos(line, column);
         line = endLine;
         column = endColumn;

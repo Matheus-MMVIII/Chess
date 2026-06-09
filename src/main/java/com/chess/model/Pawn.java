@@ -19,13 +19,11 @@ public class Pawn extends Piece {
             throw new BadRequestException("Invalid transaction attempt. ");
 
         int direction = getIsWhite() ? -1 : 1;
-        int startLine = getIsWhite() ? 6 : 1;
 
         if (column == endColumn && !table.getPosIsNull(endLine, endColumn))
             throw new BadRequestException("Invalid movement attempt. ");
 
-        boolean firstMove = line == startLine;
-        int maxMove = firstMove ? 2 : 1;
+        int maxMove = isFirstMove() ? 2 : 1;
 
         int distance = (endLine - line) * direction;
 
@@ -42,6 +40,7 @@ public class Pawn extends Piece {
         if (column != endColumn && table.getPosIsNull(endLine, endColumn))
             throw new BadRequestException("Currently, invalid movement attempt. ");
 
+        firstMove();
         table.removePos(line, column);
         line = endLine;
         column = endColumn;

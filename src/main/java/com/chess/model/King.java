@@ -15,6 +15,30 @@ public class King extends Piece {
         if (!isInsideBoard(line, column))
             throw new BadRequestException("Attempt to move a piece outside board. ");
 
+        if (isFirstMove() && (column == (endColumn+2) || column == (endColumn+3) || column == (endColumn-2))) {
+            if (endColumn > column) {
+                if (table.getPieceFirstMove(line, 7)) {
+                    table.removePos(line, column);
+                    table.move(line, 7, endLine, 5);
+                    line = endLine;
+                    column = endColumn;
+                    table.registerPos(line, column, this);
+                    firstMove();
+                    return;
+                }
+            }else {
+                if (table.getPieceFirstMove(line, 7)) {
+                    table.removePos(line, column);
+                    table.move(line, 0, endLine, 3);
+                    line = endLine;
+                    column = 2;
+                    table.registerPos(line, column, this);
+                    firstMove();
+                    return;
+                }
+            }
+        }
+
         int lineDiff = Math.abs(endLine - line);
         int columnDiff = Math.abs(endColumn - column);
 
@@ -22,6 +46,7 @@ public class King extends Piece {
             throw new BadRequestException("Invalid transaction attempt.");
         }
 
+        firstMove();
         table.removePos(line, column);
         line = endLine;
         column = endColumn;

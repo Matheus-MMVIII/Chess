@@ -87,6 +87,12 @@ public class Table {
     return table[posLine][posColumn] == null;
   }
 
+  public boolean getPieceFirstMove(int posLine, int posColumn) {
+    if (table[posLine][posColumn] == null)
+      return false;
+    return table[posLine][posColumn].isFirstMove();
+  }
+
   public boolean haveFriendPiece(int posLine, int posColumn, boolean white) {
     if (table[posLine][posColumn] == null)
       return false;
@@ -105,7 +111,7 @@ public class Table {
     if (getPosIsNull(startLine, startColumn)) throw new NotFoundException("Piece not found. ");
     if (table[startLine][startColumn].getIsWhite() != whiteTime) throw new BadRequestException("Is not your turn. ");
     table[startLine][startColumn].move(endLine, endColumn);
-    whiteTime = !whiteTime;
+    whiteTime = !table[endLine][endColumn].getIsWhite();
     System.out.println("TurnWhite: "+whiteTime);
     printBoard();
   }

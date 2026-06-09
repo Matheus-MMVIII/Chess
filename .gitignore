@@ -26,3 +26,4 @@ replay_pid*
 .idea/
 images/
 *.png
+/images/
