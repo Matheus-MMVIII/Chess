@@ -8,6 +8,7 @@ public abstract class Piece {
     protected int column;
     private final boolean white;
     protected Table table;
+    private boolean firstMove;
 
     public Piece(char type, int line, int column, boolean white, Table table) {
         this.type = type;
@@ -17,22 +18,23 @@ public abstract class Piece {
         this.line = line;
         this.column = column;
         this.table = table;
+        firstMove = true;
     }
 
     public char getType() {
         return type;
     }
 
-    public int getLine() {
-        return line;
-    }
-
-    public int getColumn() {
-        return column;
-    }
-
     public boolean getIsWhite() {
         return white;
+    }
+
+    public void firstMove() {
+        firstMove = false;
+    }
+
+    public boolean isFirstMove() {
+        return firstMove;
     }
 
     public abstract void move(int endLine, int endColumn);
