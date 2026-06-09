@@ -9,11 +9,7 @@ public class Rook extends Piece {
 
     @Override
     public void move(int endLine, int endColumn) {
-        if (haveFriend(endLine, endColumn))
-            throw new BadRequestException("Attempt to move a piece inside another friend piece. ");
-
-        if (!isInsideBoard(line, column))
-            throw new BadRequestException("Attempt to move a piece outside board. ");
+        basicValidations(endLine, endColumn);
 
         if (line != endLine && column != endColumn)
             throw new BadRequestException("Invalid transaction attempt. ");

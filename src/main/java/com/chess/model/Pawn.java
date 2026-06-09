@@ -9,11 +9,7 @@ public class Pawn extends Piece {
 
     @Override
     public void move(int endLine, int endColumn) {
-        if (haveFriend(endLine, endColumn))
-            throw new BadRequestException("Attempt to move a piece inside another friend piece. ");
-
-        if (!isInsideBoard(endLine, endColumn))
-            throw new BadRequestException("Attempt to move a piece outside board. ");
+        basicValidations(endLine, endColumn);
 
         if (column > (endColumn+1) || column < (endColumn-1))
             throw new BadRequestException("Invalid transaction attempt. ");

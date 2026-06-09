@@ -9,11 +9,7 @@ public class King extends Piece {
 
     @Override
     public void move(int endLine, int endColumn) {
-        if (haveFriend(endLine, endColumn))
-            throw new BadRequestException("Attempt to move a piece inside another friend piece. ");
-
-        if (!isInsideBoard(line, column))
-            throw new BadRequestException("Attempt to move a piece outside board. ");
+        basicValidations(endLine, endColumn);
 
         if (isFirstMove() && (column == (endColumn+2) || column == (endColumn+3) || column == (endColumn-2))) {
             if (endColumn > column) {

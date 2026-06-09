@@ -47,4 +47,12 @@ public abstract class Piece {
         return table.haveFriendPiece(line, column, white);
     }
 
+    protected void basicValidations(int endLine, int endColumn) {
+        if (haveFriend(endLine, endColumn))
+            throw new BadRequestException("Attempt to move a piece inside another friend piece. ");
+
+        if (!isInsideBoard(endLine, endColumn))
+            throw new BadRequestException("Attempt to move a piece outside board. ");
+    }
+
 }
