@@ -11,7 +11,7 @@ import com.sun.net.httpserver.HttpHandler;
 
 public class App {
     public static void main(String[] args) throws IOException {
-        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 50);
+        HttpServer server = HttpServer.create(new InetSocketAddress(8081), 50);
         server.createContext("/", new FrontendHandler());
         server.createContext("/api/chess", new ChessHandler(new ChessService()));
         server.createContext("/images", new ImageHandler());

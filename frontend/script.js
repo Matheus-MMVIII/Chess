@@ -16,7 +16,7 @@ const pieces = {
 
 var initialLine = -1;
 var initialColumn = -1;
-const url = "http://localhost:8080/api/chess/";
+const url = "http://localhost:8081/api/chess/";
 
 async function loadChess() {
     table = document.getElementById("table");
@@ -35,33 +35,33 @@ async function loadChess() {
             if (i % 2 === 0) {
                 for (j = 0; j <= 7; j++) {
                     if (i === initialLine && j === initialColumn && result[i][j] !== ".") {
-                        tableText += `<button onclick="movePiece(${i}, ${j}), setPos(${i}, ${j})" class="piece-select"><img src="${pieces[result[i][j]]}"></button>`;
+                        tableText += `<button onclick="movePiece(${i}, ${j}, \'${result[i][j]}\'), setPos(${i}, ${j})" class="piece-select"><img src="${pieces[result[i][j]]}"></button>`;
                     } else if (j % 2 === 0) {
                         if (result[i][j] === ".")
-                            tableText += `<button onclick="movePiece(${i}, ${j}), setPos(${i}, ${j})" class="piece-back-white"></button>`;
+                            tableText += `<button onclick="movePiece(${i}, ${j}, \'${result[i][j]}\'), setPos(${i}, ${j})" class="piece-back-white"></button>`;
                         else
-                            tableText += `<button onclick="movePiece(${i}, ${j}), setPos(${i}, ${j})" class="piece-back-white"><img src="${pieces[result[i][j]]}"></button>`;
+                            tableText += `<button onclick="movePiece(${i}, ${j}, \'${result[i][j]}\'), setPos(${i}, ${j})" class="piece-back-white"><img src="${pieces[result[i][j]]}"></button>`;
                     } else {
                         if (result[i][j] === ".")
-                            tableText += `<button onclick="movePiece(${i}, ${j}), setPos(${i}, ${j})" class="piece-back-black"></button>`;
+                            tableText += `<button onclick="movePiece(${i}, ${j}, \'${result[i][j]}\'), setPos(${i}, ${j})" class="piece-back-black"></button>`;
                         else
-                            tableText += `<button onclick="movePiece(${i}, ${j}), setPos(${i}, ${j})" class="piece-back-black"><img src="${pieces[result[i][j]]}"></button>`;
+                            tableText += `<button onclick="movePiece(${i}, ${j}, \'${result[i][j]}\'), setPos(${i}, ${j})" class="piece-back-black"><img src="${pieces[result[i][j]]}"></button>`;
                     }
                 }
             }else {
                 for (j = 0; j <= 7; j++) {
                     if (i === initialLine && j === initialColumn && result[i][j] !== ".") {
-                        tableText += `<button onclick="movePiece(${i}, ${j}), setPos(${i}, ${j})" class="piece-select"><img src="${pieces[result[i][j]]}"></button>`;
+                        tableText += `<button onclick="movePiece(${i}, ${j}, \'${result[i][j]}\'), setPos(${i}, ${j})" class="piece-select"><img src="${pieces[result[i][j]]}"></button>`;
                     } else if (j % 2 !== 0) {
                         if (result[i][j] === ".")
-                            tableText += `<button onclick="movePiece(${i}, ${j}), setPos(${i}, ${j})" class="piece-back-white"></button>`;
+                            tableText += `<button onclick="movePiece(${i}, ${j}, \'${result[i][j]}\'), setPos(${i}, ${j})" class="piece-back-white"></button>`;
                         else
-                            tableText += `<button onclick="movePiece(${i}, ${j}), setPos(${i}, ${j})" class="piece-back-white"><img src="${pieces[result[i][j]]}"></button>`;
+                            tableText += `<button onclick="movePiece(${i}, ${j}, \'${result[i][j]}\'), setPos(${i}, ${j})" class="piece-back-white"><img src="${pieces[result[i][j]]}"></button>`;
                     } else {
                         if (result[i][j] === ".")
-                            tableText += `<button onclick="movePiece(${i}, ${j}), setPos(${i}, ${j})" class="piece-back-black"></button>`;
+                            tableText += `<button onclick="movePiece(${i}, ${j}, \'${result[i][j]}\'), setPos(${i}, ${j})" class="piece-back-black"></button>`;
                         else
-                            tableText += `<button onclick="movePiece(${i}, ${j}), setPos(${i}, ${j})" class="piece-back-black"><img src="${pieces[result[i][j]]}"></button>`;
+                            tableText += `<button onclick="movePiece(${i}, ${j}, \'${result[i][j]}\'), setPos(${i}, ${j})" class="piece-back-black"><img src="${pieces[result[i][j]]}"></button>`;
                     }
                 }
             }
@@ -73,7 +73,7 @@ async function loadChess() {
     }
 }
 
-async function movePiece(endLine, endColumn) {
+async function movePiece(endLine, endColumn, pieceType) {
     console.log(`iLine: ${initialLine}, iColumn: ${initialColumn}, eLine: ${endLine}, eColumn: ${endColumn}`);
     try {
         if (initialLine === -1 && initialColumn === -1) {
@@ -104,5 +104,6 @@ function setPos(posLine, posColumn) {
     initialColumn = posColumn;
     loadChess();
 }
+
 
 loadChess();
