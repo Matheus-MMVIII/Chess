@@ -31,7 +31,6 @@ public class ChessHandler extends BaseHandler {
 
         if ("GET".equalsIgnoreCase(method) && id ==  -1) {
             String board = JsonUtil.board(chessService.getBoard());
-            System.out.println(board);
             sendJson(exchange, 200, board);
             return;
         }
