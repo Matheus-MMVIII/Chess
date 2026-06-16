@@ -19,7 +19,7 @@ let initialColumn = -1;
 const url = "http://localhost:8081/api/chess/";
 
 async function loadChess() {
-    table = document.getElementById("table");
+    const table = document.getElementById("table");
     let tableText = `<div class="pieces">`;
 
     try {
@@ -30,39 +30,19 @@ async function loadChess() {
 
         const result = await response.json();
 
-        for (i = 0; i <= 7; i++) {
-            if (i % 2 === 0) {
-                for (j = 0; j <= 7; j++) {
-                    if (i === initialLine && j === initialColumn && result[i][j] !== ".") {
-                        tableText += `<button onclick="handleClick(${i}, ${j}, \'${result[i][j]}\')" class="piece-select"><img src="${pieces[result[i][j]]}"></button>`;
-                    } else if (j % 2 === 0) {
-                        if (result[i][j] === ".")
-                            tableText += `<button onclick="handleClick(${i}, ${j}, \'${result[i][j]}\')" class="piece-back-white"></button>`;
-                        else
-                            tableText += `<button onclick="handleClick(${i}, ${j}, \'${result[i][j]}\')" class="piece-back-white"><img src="${pieces[result[i][j]]}"></button>`;
-                    } else {
-                        if (result[i][j] === ".")
-                            tableText += `<button onclick="handleClick(${i}, ${j}, \'${result[i][j]}\')" class="piece-back-black"></button>`;
-                        else
-                            tableText += `<button onclick="handleClick(${i}, ${j}, \'${result[i][j]}\')" class="piece-back-black"><img src="${pieces[result[i][j]]}"></button>`;
-                    }
-                }
-            }else {
-                for (j = 0; j <= 7; j++) {
-                    if (i === initialLine && j === initialColumn && result[i][j] !== ".") {
-                        tableText += `<button onclick="handleClick(${i}, ${j}, \'${result[i][j]}\')" class="piece-select"><img src="${pieces[result[i][j]]}"></button>`;
-                    } else if (j % 2 !== 0) {
-                        if (result[i][j] === ".")
-                            tableText += `<button onclick="handleClick(${i}, ${j}, \'${result[i][j]}\')" class="piece-back-white"></button>`;
-                        else
-                            tableText += `<button onclick="handleClick(${i}, ${j}, \'${result[i][j]}\')" class="piece-back-white"><img src="${pieces[result[i][j]]}"></button>`;
-                    } else {
-                        if (result[i][j] === ".")
-                            tableText += `<button onclick="handleClick(${i}, ${j}, \'${result[i][j]}\')" class="piece-back-black"></button>`;
-                        else
-                            tableText += `<button onclick="handleClick(${i}, ${j}, \'${result[i][j]}\')" class="piece-back-black"><img src="${pieces[result[i][j]]}"></button>`;
-                    }
-                }
+        for (let i = 0; i <= 7; i++) {
+            for (let j = 0; j <= 7; j++) {
+                const isWhite = (i + j) % 2 === 0;
+                const squareClass = isWhite ? "piece-back-white" : "piece-back-black";
+                const piece = result[i][j];
+                const selected = i === initialLine && j === initialColumn && piece !== ".";
+
+                tableText += `
+                <button
+                    onclick="handleClick(${i}, ${j}, '${piece}')"
+                    class="${selected ? 'piece-select' : squareClass}">
+                    ${piece !== "." ? `<img src="${pieces[piece]}">` : ""}
+                </button>`;
             }
         }
         tableText += `</div>`;
