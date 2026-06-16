@@ -115,4 +115,15 @@ public class Table {
     System.out.println("TurnWhite: "+whiteTime);
     printBoard();
   }
+
+  public void promotePawn(int posLine, int posColumn, char type) {
+    boolean white = Character.isUpperCase(type);
+    switch (type) {
+      case 'Q', 'q' -> table[posLine][posColumn] = new Queen(type, posLine, posColumn, white, this);
+      case 'R', 'r' -> table[posLine][posColumn] = new Rook(type, posLine, posColumn, white, this);
+      case 'B', 'b' -> table[posLine][posColumn] = new Bishop(type, posLine, posColumn, white, this);
+      case 'H', 'h' -> table[posLine][posColumn] = new Horse(type, posLine, posColumn, white, this);
+    }
+    printBoard();
+  }
 }

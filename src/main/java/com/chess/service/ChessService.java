@@ -16,4 +16,8 @@ public class ChessService {
     public void movePiece(int startLine, int startColumn, int endLine, int endColumn) {
         table.move(startLine, startColumn, endLine, endColumn);
     }
+
+    public void promotePawn(int line, int column, char type) {
+        table.promotePawn(line, column, type);
+    }
 }

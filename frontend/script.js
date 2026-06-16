@@ -79,6 +79,11 @@ async function movePiece(endLine, endColumn, pieceType) {
         if (initialLine === -1 && initialColumn === -1) {
             throw new Error(`Know initial piece pos. `);
         }
+        if (pieceType === 'p' || pieceType === 'P') {
+            if (endLine === 0 || endLine === 7) {
+
+            }
+        }
         const response = await fetch(url, {
             method: "PUT",
             headers: {
