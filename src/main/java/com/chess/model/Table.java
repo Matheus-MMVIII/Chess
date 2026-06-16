@@ -117,7 +117,8 @@ public class Table {
   }
 
   public void promotePawn(int posLine, int posColumn, char type) {
-    boolean white = Character.isUpperCase(type);
+    boolean white = posLine != 0;
+    type = white ? Character.toLowerCase(type) : Character.toUpperCase(type);
     switch (type) {
       case 'Q', 'q' -> table[posLine][posColumn] = new Queen(type, posLine, posColumn, white, this);
       case 'R', 'r' -> table[posLine][posColumn] = new Rook(type, posLine, posColumn, white, this);

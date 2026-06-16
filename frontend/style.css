@@ -66,3 +66,32 @@ body {
     justify-content: center;
     align-items: center;
 }
+
+.promotion-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.promotion-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    gap: 15px;
+}
+
+.promotion-content button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.promotion-content img {
+    width: 80px;
+    height: 80px;
+}
