@@ -29,7 +29,7 @@ public class ChessHandler extends BaseHandler {
         int id = extractIdFromPath(exchange, BASE_PATH);
         char typePromotion = extractTypeFromPath(exchange, BASE_PATH, id);
 
-        if ("GET".equalsIgnoreCase(method) && id ==  -1) {
+        if ("GET".equalsIgnoreCase(method) && id == -1) {
             String board = JsonUtil.board(chessService.getBoard());
             sendJson(exchange, 200, board);
             return;
@@ -57,10 +57,10 @@ public class ChessHandler extends BaseHandler {
             return '.';
         }
 
-        if (!path.startsWith(basePath + "/" + id + "/")) {
+        if (!path.startsWith(basePath + "/")) {
             throw new BadRequestException("Invalid route.");
         }
 
-        return path.charAt(basePath.length() + (""+id).length() + 1);
+        return path.charAt(basePath.length() + 1);//(""+id).length() + 1);
     }
 }
