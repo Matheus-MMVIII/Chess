@@ -77,7 +77,8 @@ body {
     z-index: 999;
 }
 
-.promotion-content {
+.promotion-content-white,
+.promotion-content-black {
     background: #81b563;
     padding: 20px;
     border-radius: 10px;
@@ -85,13 +86,15 @@ body {
     gap: 15px;
 }
 
-.promotion-content button {
+.promotion-content-white button,
+.promotion-content-black button {
     border: none;
     background: transparent;
     cursor: pointer;
 }
 
-.promotion-content img {
+.promotion-content-white img,
+.promotion-content-black img {
     width: 80px;
     height: 80px;
 

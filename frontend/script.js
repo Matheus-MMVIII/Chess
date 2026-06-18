@@ -65,9 +65,13 @@ async function movePiece(endLine, endColumn) {
         let pieceType = board[initialLine][initialColumn];
         if (pieceType === 'p' || pieceType === 'P') {
             if (endLine === 0 || endLine === 7) {
-                openPromotionModal(pieceType.islower());
+                const promotionPiece =
+                    await openPromotionModal(
+                        pieceType === pieceType.toLowerCase()
+                    );
 
                 endpoint += promotionPiece;
+                console.log(endpoint);
             }
         }
         const response = await fetch(endpoint, {
@@ -110,18 +114,34 @@ function clearSelection() {
 }
 
 function openPromotionModal(white) {
-    let content = white ? "promotion-content-white" : "promotion-content-black";
-    document.getElementById("promotionModal").style.display = "flex";
+    return new Promise(resolve => {
+        document.getElementById("promotionModal").style.display = "flex";
+
+        const whiteContent = document.querySelector(".promotion-content-white");
+        const blackContent = document.querySelector(".promotion-content-black");
+
+        if (white) {
+            whiteContent.style.display = "flex";
+            blackContent.style.display = "none";
+        } else {
+            whiteContent.style.display = "none";
+            blackContent.style.display = "flex";
+        }
+        window.resolvePromotion = resolve;
+    });
 }
 
 function closePromotionModal() {
     document.getElementById("promotionModal").style.display = "none";
+
+    document.querySelector(".promotion-content-white").style.display = "none";
+    document.querySelector(".promotion-content-black").style.display = "none";
 }
 
 async function selectPromotion(piece) {
     closePromotionModal();
 
-    promotionPiece = piece;
+    window.resolvePromotion(piece);
 }
 
 loadChess();
