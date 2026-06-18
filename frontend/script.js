@@ -17,6 +17,7 @@ const pieces = {
 let initialLine = -1;
 let initialColumn = -1;
 let board = [];
+let promotionPiece;
 const url = "http://localhost:8081/api/chess/";
 
 async function loadChess() {
@@ -55,6 +56,7 @@ async function loadChess() {
 }
 
 async function movePiece(endLine, endColumn) {
+    let endpoint = url;
     console.log(`iLine: ${initialLine}, iColumn: ${initialColumn}, eLine: ${endLine}, eColumn: ${endColumn}`);
     try {
         if (initialLine === -1 || initialColumn === -1) {
@@ -63,10 +65,12 @@ async function movePiece(endLine, endColumn) {
         let pieceType = board[initialLine][initialColumn];
         if (pieceType === 'p' || pieceType === 'P') {
             if (endLine === 0 || endLine === 7) {
-                console.log("TEste");
+                openPromotionModal(pieceType.islower());
+
+                endpoint += promotionPiece;
             }
         }
-        const response = await fetch(url, {
+        const response = await fetch(endpoint, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -103,6 +107,21 @@ function handleClick(line, column) {
 function clearSelection() {
     initialLine = -1;
     initialColumn = -1;
+}
+
+function openPromotionModal(white) {
+    let content = white ? "promotion-content-white" : "promotion-content-black";
+    document.getElementById("promotionModal").style.display = "flex";
+}
+
+function closePromotionModal() {
+    document.getElementById("promotionModal").style.display = "none";
+}
+
+async function selectPromotion(piece) {
+    closePromotionModal();
+
+    promotionPiece = piece;
 }
 
 loadChess();
