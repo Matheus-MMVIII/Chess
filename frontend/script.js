@@ -18,7 +18,24 @@ let initialLine = -1;
 let initialColumn = -1;
 let board = [];
 let promotionPiece;
-const url = "http://localhost:8081/api/chess/";
+const baseUrl = "http://localhost:8081/api/chess/";
+let url = "http://localhost:8081/api/chess/";
+createBoard();
+
+async function createBoard() {
+    try {
+        console.log("POST: "+baseUrl)
+        const response = await fetch(baseUrl, {
+            method: "POST"
+        });
+        const result = await response.json();
+        console.log(result);
+        url += result.id;
+        loadChess();
+    } catch (error) {
+        console.error(error.message);
+    }
+}
 
 async function loadChess() {
     const table = document.getElementById("table");
@@ -71,7 +88,7 @@ async function movePiece(endLine, endColumn) {
                     const promotionPiece =
                         await openPromotionModal(isWhite);
 
-                    endpoint += promotionPiece;
+                    endpoint += "/"+promotionPiece;
                     console.log(endpoint);
                 }
             }
@@ -146,5 +163,3 @@ async function selectPromotion(piece) {
 
     window.resolvePromotion(piece);
 }
-
-loadChess();
