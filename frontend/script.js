@@ -25,6 +25,7 @@ async function loadChess() {
     let tableText = `<div class="pieces">`;
 
     try {
+        console.log("GET: "+url);
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
@@ -64,16 +65,18 @@ async function movePiece(endLine, endColumn) {
         }
         let pieceType = board[initialLine][initialColumn];
         if (pieceType === 'p' || pieceType === 'P') {
+            let isWhite = pieceType === pieceType.toLowerCase();
             if (endLine === 0 || endLine === 7) {
-                const promotionPiece =
-                    await openPromotionModal(
-                        pieceType === pieceType.toLowerCase()
-                    );
+                if ((initialLine === 1 && isWhite) || (initialLine === 6 && !isWhite)) {
+                    const promotionPiece =
+                        await openPromotionModal(isWhite);
 
-                endpoint += promotionPiece;
-                console.log(endpoint);
+                    endpoint += promotionPiece;
+                    console.log(endpoint);
+                }
             }
         }
+        console.log("PUT: "+endpoint);
         const response = await fetch(endpoint, {
             method: "PUT",
             headers: {
