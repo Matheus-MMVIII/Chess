@@ -27,7 +27,9 @@ public class ChessHandler extends BaseHandler {
 
         String method = exchange.getRequestMethod();
         String id = extractIdFromPath(exchange, BASE_PATH);
-        char typePromotion = extractTypeFromPath(exchange, (BASE_PATH+id));
+        char typePromotion = '.';
+        if (!id.equals("-1"))
+            typePromotion = extractTypeFromPath(exchange, (BASE_PATH+"/"+id));
 
         if ("GET".equalsIgnoreCase(method) && !id.equals("-1")) {
             String board = JsonUtil.board(chessService.getBoard(id));

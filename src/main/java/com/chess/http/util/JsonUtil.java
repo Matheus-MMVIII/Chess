@@ -31,7 +31,7 @@ public final class JsonUtil {
 
     public static String jsonId(String id) {
         return "{"
-                + "\"id\":" + id
+                + "\"id\":\"" + id + "\""
                 + "}";
     }
 }

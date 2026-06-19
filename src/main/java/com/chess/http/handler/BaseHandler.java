@@ -57,18 +57,17 @@ public abstract class BaseHandler implements HttpHandler {
 
     protected String extractIdFromPath(HttpExchange exchange, String basePath) {
         String path = exchange.getRequestURI().getPath();
+        System.out.println("path: "+path);
         if (path.equals(basePath) || path.equals(basePath + "/")) {
             return "-1";
         }
 
         if (!path.startsWith(basePath + "/")) {
-            throw new BadRequestException("Invalid route.");
+            throw new BadRequestException("Invalid route. ");
         }
 
         String idSegment = path.substring(basePath.length() + 1);
-        if (idSegment.contains("/")) {
-            throw new BadRequestException("Invalid route.");
-        }
+        idSegment = idSegment.split("/")[0];
 
         return idSegment;
     }
