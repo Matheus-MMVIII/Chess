@@ -55,10 +55,10 @@ public abstract class BaseHandler implements HttpHandler {
         }
     }
 
-    protected int extractIdFromPath(HttpExchange exchange, String basePath) {
+    protected String extractIdFromPath(HttpExchange exchange, String basePath) {
         String path = exchange.getRequestURI().getPath();
         if (path.equals(basePath) || path.equals(basePath + "/")) {
-            return -1;
+            return "-1";
         }
 
         if (!path.startsWith(basePath + "/")) {
@@ -70,7 +70,7 @@ public abstract class BaseHandler implements HttpHandler {
             throw new BadRequestException("Invalid route.");
         }
 
-        return Integer.valueOf(idSegment);
+        return idSegment;
     }
 
     public static void sendJson(HttpExchange exchange, int statusCode, String json) throws IOException {

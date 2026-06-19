@@ -2,22 +2,30 @@ package com.chess.service;
 
 import com.chess.model.Table;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class ChessService {
-    private Table table;
+    private final Map<String, Table> games = new HashMap<>();
 
     public ChessService() {
-        table = new Table();
     }
 
-    public String[][] getBoard() {
-        return table.getBoard();
+    public void createTable() {
+        String gameId = UUID.randomUUID().toString();
+        games.put(gameId, new Table());
     }
 
-    public void movePiece(int startLine, int startColumn, int endLine, int endColumn) {
-        table.move(startLine, startColumn, endLine, endColumn);
+    public String[][] getBoard(String id) {
+        return games.get(id).getBoard();
     }
 
-    public void promotePawn(int line, int column, char type) {
-        table.promotePawn(line, column, type);
+    public void movePiece(String id, int startLine, int startColumn, int endLine, int endColumn) {
+        games.get(id).move(startLine, startColumn, endLine, endColumn);
+    }
+
+    public void promotePawn(String id, int line, int column, char type) {
+        games.get(id).promotePawn(line, column, type);
     }
 }

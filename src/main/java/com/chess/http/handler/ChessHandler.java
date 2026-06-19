@@ -26,27 +26,27 @@ public class ChessHandler extends BaseHandler {
         headers.set("Access-Control-Allow-Headers", "Content-Type");
 
         String method = exchange.getRequestMethod();
-        int id = extractIdFromPath(exchange, BASE_PATH);
+        String id = extractIdFromPath(exchange, BASE_PATH);
         char typePromotion = extractTypeFromPath(exchange, (BASE_PATH+id));
 
-        if ("GET".equalsIgnoreCase(method) && id == -1) {
-            String board = JsonUtil.board(chessService.getBoard());
+        if ("GET".equalsIgnoreCase(method) && !id.equals("-1")) {
+            String board = JsonUtil.board(chessService.getBoard(id));
             sendJson(exchange, 200, board);
             return;
         }
         if ("PUT".equalsIgnoreCase(method) && typePromotion == '.') {
             String json = requireJsonBody(exchange);
             int[] pos = JsonUtil.getPos(json);
-            chessService.movePiece(pos[0], pos[1], pos[2], pos[3]);
-            sendJson(exchange, 200, JsonUtil.board(chessService.getBoard()));
+            chessService.movePiece(id, pos[0], pos[1], pos[2], pos[3]);
+            sendJson(exchange, 200, JsonUtil.board(chessService.getBoard(id)));
             return;
         }
         if ("PUT".equalsIgnoreCase(method) && typePromotion != '.') {
             String json = requireJsonBody(exchange);
             int[] pos = JsonUtil.getPos(json);
-            chessService.movePiece(pos[0], pos[1], pos[2], pos[3]);
-            chessService.promotePawn(pos[2], pos[3], typePromotion);
-            sendJson(exchange, 200, JsonUtil.board(chessService.getBoard()));
+            chessService.movePiece(id, pos[0], pos[1], pos[2], pos[3]);
+            chessService.promotePawn(id, pos[2], pos[3], typePromotion);
+            sendJson(exchange, 200, JsonUtil.board(chessService.getBoard(id)));
             return;
         }
     }
