@@ -27,7 +27,7 @@ public class ChessHandler extends BaseHandler {
 
         String method = exchange.getRequestMethod();
         int id = extractIdFromPath(exchange, BASE_PATH);
-        char typePromotion = extractTypeFromPath(exchange, BASE_PATH, id);
+        char typePromotion = extractTypeFromPath(exchange, (BASE_PATH+id));
 
         if ("GET".equalsIgnoreCase(method) && id == -1) {
             String board = JsonUtil.board(chessService.getBoard());
@@ -51,7 +51,7 @@ public class ChessHandler extends BaseHandler {
         }
     }
 
-    private char extractTypeFromPath(HttpExchange exchange, String basePath, int id) {
+    private char extractTypeFromPath(HttpExchange exchange, String basePath) {
         String path = exchange.getRequestURI().getPath();
         if (path.equals(basePath) || path.equals(basePath + "/")) {
             return '.';
@@ -61,6 +61,6 @@ public class ChessHandler extends BaseHandler {
             throw new BadRequestException("Invalid route.");
         }
 
-        return path.charAt(basePath.length() + 1);//(""+id).length() + 1);
+        return path.charAt(basePath.length() + 1);
     }
 }
