@@ -28,4 +28,10 @@ public final class JsonUtil {
 
         return pos;
     }
+
+    public static String jsonId(String id) {
+        return "{"
+                + "\"id\":" + id
+                + "}";
+    }
 }

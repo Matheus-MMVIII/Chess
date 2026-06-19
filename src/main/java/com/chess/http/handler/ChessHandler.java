@@ -34,6 +34,12 @@ public class ChessHandler extends BaseHandler {
             sendJson(exchange, 200, board);
             return;
         }
+        if ("POST".equalsIgnoreCase(method) && id.equals("-1")) {
+            String idTable = chessService.createTable();
+            String json = JsonUtil.jsonId(idTable);
+            sendJson(exchange, 201, json);
+            return;
+        }
         if ("PUT".equalsIgnoreCase(method) && typePromotion == '.') {
             String json = requireJsonBody(exchange);
             int[] pos = JsonUtil.getPos(json);

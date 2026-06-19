@@ -12,9 +12,10 @@ public class ChessService {
     public ChessService() {
     }
 
-    public void createTable() {
+    public String createTable() {
         String gameId = UUID.randomUUID().toString();
         games.put(gameId, new Table());
+        return gameId;
     }
 
     public String[][] getBoard(String id) {
