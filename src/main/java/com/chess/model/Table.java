@@ -4,8 +4,8 @@ import com.chess.exception.BadRequestException;
 import com.chess.exception.NotFoundException;
 
 public class Table {
-  private static Piece[][] table = new Piece[8][8];
-  private static boolean whiteTime = true;
+  private Piece[][] table;
+  private boolean whiteTime = true;
 
   //k = King
   //q = queen
@@ -15,6 +15,7 @@ public class Table {
   //p = pawn
 
   public Table() {
+    table = new Piece[8][8];
     generateBoard();
     //printBoard();
   }
@@ -107,7 +108,9 @@ public class Table {
     table[posLine][posColumn] = null;
   }
 
-  public void move(int startLine, int startColumn, int endLine, int endColumn) {
+  public synchronized void move(int startLine, int startColumn, int endLine, int endColumn) {
+    if (startLine < 0 || startLine > 7 || startColumn < 0 || startColumn > 7) throw new BadRequestException("Invalid start position. ");
+    if (endLine < 0 || endLine > 7 || endColumn < 0 || endColumn > 7) throw new BadRequestException("Invalid end position. ");
     if (getPosIsNull(startLine, startColumn)) throw new NotFoundException("Piece not found. ");
     if (table[startLine][startColumn].getIsWhite() != whiteTime) throw new BadRequestException("Is not your turn. ");
     table[startLine][startColumn].move(endLine, endColumn);
@@ -117,7 +120,8 @@ public class Table {
   }
 
   public void promotePawn(int posLine, int posColumn, char type) {
-    boolean white = posLine == 0;
+    if (posLine < 0 || posLine > 7 || posColumn < 0 ||posColumn > 7) throw new BadRequestException("Invalid position. ");
+    boolean white = table[posLine][posColumn].getIsWhite();
     type = white ? Character.toLowerCase(type) : Character.toUpperCase(type);
     switch (type) {
       case 'Q', 'q' -> table[posLine][posColumn] = new Queen(type, posLine, posColumn, white, this);

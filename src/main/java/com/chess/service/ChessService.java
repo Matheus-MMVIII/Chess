@@ -2,12 +2,12 @@ package com.chess.service;
 
 import com.chess.model.Table;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ChessService {
-    private final Map<String, Table> games = new HashMap<>();
+    private final Map<String, Table> games = new ConcurrentHashMap<>();
 
     public ChessService() {
     }
