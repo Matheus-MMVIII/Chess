@@ -46,6 +46,7 @@ public class ChessHandler extends BaseHandler {
             String json = requireJsonBody(exchange);
             int[] pos = JsonUtil.getPos(json);
             chessService.movePiece(id, pos[0], pos[1], pos[2], pos[3]);
+            System.out.printf("chessService.movePiece(idTable, %d, %d, %d, %d);\n", pos[0], pos[1], pos[2], pos[3]);
             sendJson(exchange, 200, JsonUtil.board(chessService.getBoard(id)));
             return;
         }
@@ -53,6 +54,7 @@ public class ChessHandler extends BaseHandler {
             String json = requireJsonBody(exchange);
             int[] pos = JsonUtil.getPos(json);
             chessService.movePiece(id, pos[0], pos[1], pos[2], pos[3]);
+            System.out.printf("chessService.movePiece(idTable, %d, %d, %d, %d);\n", pos[0], pos[1], pos[2], pos[3]);
             chessService.promotePawn(id, pos[2], pos[3], typePromotion);
             sendJson(exchange, 200, JsonUtil.board(chessService.getBoard(id)));
             return;

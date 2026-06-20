@@ -57,7 +57,6 @@ public abstract class BaseHandler implements HttpHandler {
 
     protected String extractIdFromPath(HttpExchange exchange, String basePath) {
         String path = exchange.getRequestURI().getPath();
-        System.out.println("path: "+path);
         if (path.equals(basePath) || path.equals(basePath + "/")) {
             return "-1";
         }

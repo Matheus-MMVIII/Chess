@@ -16,7 +16,7 @@ public class Table {
 
   public Table() {
     generateBoard();
-    printBoard();
+    //printBoard();
   }
 
   public String[][] getBoard() {
@@ -112,8 +112,8 @@ public class Table {
     if (table[startLine][startColumn].getIsWhite() != whiteTime) throw new BadRequestException("Is not your turn. ");
     table[startLine][startColumn].move(endLine, endColumn);
     whiteTime = !table[endLine][endColumn].getIsWhite();
-    System.out.println("TurnWhite: "+whiteTime);
-    printBoard();
+    //System.out.println("TurnWhite: "+whiteTime);
+    //printBoard();
   }
 
   public void promotePawn(int posLine, int posColumn, char type) {
@@ -125,6 +125,6 @@ public class Table {
       case 'B', 'b' -> table[posLine][posColumn] = new Bishop(type, posLine, posColumn, white, this);
       case 'H', 'h' -> table[posLine][posColumn] = new Horse(type, posLine, posColumn, white, this);
     }
-    printBoard();
+    //printBoard();
   }
 }

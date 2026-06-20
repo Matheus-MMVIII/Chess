@@ -18,6 +18,10 @@ public class ChessService {
         return gameId;
     }
 
+    public void deleteTable(Table table) {
+        games.remove(table);
+    }
+
     public String[][] getBoard(String id) {
         return games.get(id).getBoard();
     }
