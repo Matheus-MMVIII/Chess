@@ -20,7 +20,9 @@ let board = [];
 let promotionPiece;
 const baseUrl = "http://localhost:8081/api/chess/";
 let url = "http://localhost:8081/api/chess/";
-createBoard();
+if (baseUrl === url) {
+    createBoard();
+}
 
 async function createBoard() {
     try {

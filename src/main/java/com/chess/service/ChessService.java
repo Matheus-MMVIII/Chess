@@ -18,8 +18,8 @@ public class ChessService {
         return gameId;
     }
 
-    public void deleteTable(Table table) {
-        games.remove(table);
+    public void deleteTable(String id) {
+        games.remove(id);
     }
 
     public String[][] getBoard(String id) {
