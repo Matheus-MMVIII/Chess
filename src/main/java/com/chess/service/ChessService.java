@@ -19,6 +19,7 @@ public class ChessService {
     }
 
     public void deleteTable(String id) {
+        games.get(id).deleteBoard();
         games.remove(id);
     }
 

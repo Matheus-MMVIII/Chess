@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 class ChessServiceTests {
     private ChessService chessService;
     private final List<String> idsTable = new ArrayList<>();
@@ -22,6 +24,20 @@ class ChessServiceTests {
             chessService.deleteTable(id);
         }
         idsTable.clear();
+    }
+
+    @Test
+    void mustCreateTable() {
+        String id = chessService.createTable();
+        assertNotNull(id);
+        chessService.deleteTable(id);
+    }
+
+    @Test
+    void mustDeleteTable() {
+        String id = chessService.createTable();
+        assertNotNull(id);
+        chessService.deleteTable(id);
     }
 
     @Test
