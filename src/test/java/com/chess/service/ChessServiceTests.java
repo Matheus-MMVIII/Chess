@@ -41,9 +41,24 @@ class ChessServiceTests {
     }
 
     @Test
+    void mustGetBoard() {
+        String id = chessService.createTable();
+        idsTable.add(id);
+        assertNotNull(id);
+
+        String[][] board = chessService.getBoard(id);
+        for (String[] line : board) {
+            for (String piece : line) {
+                assertNotNull(piece);
+            }
+        }
+    }
+
+    @Test
     void mustPromotedWhitePawnToQueen() {
         String id = chessService.createTable();
         idsTable.add(id);
+        assertNotNull(id);
 
         chessService.movePiece(id, 6, 4, 4, 4);
         chessService.movePiece(id, 1, 3, 3, 3);
@@ -61,6 +76,7 @@ class ChessServiceTests {
     void mustPromotedWhitePawnToRook() {
         String id = chessService.createTable();
         idsTable.add(id);
+        assertNotNull(id);
 
         chessService.movePiece(id, 6, 4, 4, 4);
         chessService.movePiece(id, 1, 3, 3, 3);
@@ -78,6 +94,7 @@ class ChessServiceTests {
     void mustPromotedWhitePawnToBishop() {
         String id = chessService.createTable();
         idsTable.add(id);
+        assertNotNull(id);
 
         chessService.movePiece(id, 6, 4, 4, 4);
         chessService.movePiece(id, 1, 3, 3, 3);
@@ -95,6 +112,7 @@ class ChessServiceTests {
     void mustPromotedWhitePawnToHorse() {
         String id = chessService.createTable();
         idsTable.add(id);
+        assertNotNull(id);
 
         chessService.movePiece(id, 6, 4, 4, 4);
         chessService.movePiece(id, 1, 3, 3, 3);
@@ -112,6 +130,7 @@ class ChessServiceTests {
     void mustPromotedBlackPawnToQueen() {
         String id = chessService.createTable();
         idsTable.add(id);
+        assertNotNull(id);
 
         chessService.movePiece(id, 6, 4, 4, 4);
         chessService.movePiece(id, 1, 3, 3, 3);
@@ -130,6 +149,7 @@ class ChessServiceTests {
     void mustPromotedBlackPawnToRook() {
         String id = chessService.createTable();
         idsTable.add(id);
+        assertNotNull(id);
 
         chessService.movePiece(id, 6, 4, 4, 4);
         chessService.movePiece(id, 1, 3, 3, 3);
@@ -148,6 +168,7 @@ class ChessServiceTests {
     void mustPromotedBlackPawnToBishop() {
         String id = chessService.createTable();
         idsTable.add(id);
+        assertNotNull(id);
 
         chessService.movePiece(id, 6, 4, 4, 4);
         chessService.movePiece(id, 1, 3, 3, 3);
@@ -166,6 +187,7 @@ class ChessServiceTests {
     void mustPromotedBlackPawnToHorse() {
         String id = chessService.createTable();
         idsTable.add(id);
+        assertNotNull(id);
 
         chessService.movePiece(id, 6, 4, 4, 4);
         chessService.movePiece(id, 1, 3, 3, 3);
