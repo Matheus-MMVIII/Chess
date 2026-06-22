@@ -201,4 +201,75 @@ class ChessServiceTests {
         chessService.movePiece(id, 6, 6, 7, 7);
         chessService.promotePawn(id, 7, 7, 'H');
     }
+
+    @Test
+    void mustMovPawnLong() {
+        String id = chessService.createTable();
+        idsTable.add(id);
+        assertNotNull(id);
+
+        chessService.movePiece(id, 6, 4, 4, 4);
+    }
+
+    @Test
+    void mustMovPawn() {
+        String id = chessService.createTable();
+        idsTable.add(id);
+        assertNotNull(id);
+
+        chessService.movePiece(id, 6, 4, 5, 4);
+    }
+
+    @Test
+    void mustMovKing() {
+        String id = chessService.createTable();
+        idsTable.add(id);
+        assertNotNull(id);
+
+        chessService.movePiece(id, 6, 4, 4, 4);
+        chessService.movePiece(id, 1, 4, 3, 4);
+        chessService.movePiece(id, 7, 4, 6, 4);
+    }
+
+    @Test
+    void mustMovQueen() {
+        String id = chessService.createTable();
+        idsTable.add(id);
+        assertNotNull(id);
+
+        chessService.movePiece(id, 6, 4, 4, 4);
+        chessService.movePiece(id, 1, 4, 3, 4);
+        chessService.movePiece(id, 7, 3, 3, 7);
+    }
+
+    @Test
+    void mustMovHorse() {
+        String id = chessService.createTable();
+        idsTable.add(id);
+        assertNotNull(id);
+
+        chessService.movePiece(id, 7, 1, 5, 2);
+    }
+
+    @Test
+    void mustMovBishop() {
+        String id = chessService.createTable();
+        idsTable.add(id);
+        assertNotNull(id);
+
+        chessService.movePiece(id, 6, 4, 4, 4);
+        chessService.movePiece(id, 1, 4, 3, 4);
+        chessService.movePiece(id, 7, 5, 4, 2);
+    }
+
+    @Test
+    void mustMovRook() {
+        String id = chessService.createTable();
+        idsTable.add(id);
+        assertNotNull(id);
+
+        chessService.movePiece(id, 6, 0, 4, 0);
+        chessService.movePiece(id, 1, 4, 3, 4);
+        chessService.movePiece(id, 7, 0, 5, 0);
+    }
 }
