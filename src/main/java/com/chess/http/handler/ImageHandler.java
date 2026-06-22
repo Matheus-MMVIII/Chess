@@ -19,7 +19,21 @@ public class ImageHandler extends BaseHandler {
 
         String imageName = uri.replace("/images/", "");
 
-        Path imagePath = Path.of("images", imageName);
+        Path imagesDir = Path.of("images").toAbsolutePath().normalize();
+
+        Path imagePath = imagesDir
+                .resolve(imageName)
+                .normalize();
+
+        if (!imagePath.startsWith(imagesDir)) {
+            exchange.sendResponseHeaders(403, -1);
+            return;
+        }
+
+        if (!imageName.endsWith(".png")) {
+            exchange.sendResponseHeaders(403, -1);
+            return;
+        }
 
         if (!Files.exists(imagePath) || Files.isDirectory(imagePath)) {
             exchange.sendResponseHeaders(404, -1);
@@ -31,7 +45,8 @@ public class ImageHandler extends BaseHandler {
         exchange.getResponseHeaders().set("Content-Type", "image/png");
         exchange.sendResponseHeaders(200, imageBytes.length);
 
-        exchange.getResponseBody().write(imageBytes);
-        exchange.getResponseBody().close();
+        try (OutputStream os = exchange.getResponseBody()) {
+            os.write(imageBytes);
+        }
     }
 }
