@@ -1,5 +1,7 @@
 package com.chess.service;
 
+import com.chess.exception.BadRequestException;
+import com.chess.exception.NotFoundException;
 import com.chess.model.Table;
 
 import java.util.Map;
@@ -24,6 +26,12 @@ public class ChessService {
     }
 
     public String[][] getBoard(String id) {
+        if (id == null || id.isEmpty()) {
+            throw new BadRequestException("Invalid id. ");
+        }
+        if (!games.containsKey(id)) {
+            throw new NotFoundException("Id not found. ");
+        }
         return games.get(id).getBoard();
     }
 
