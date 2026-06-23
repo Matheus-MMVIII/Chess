@@ -8,6 +8,8 @@ import java.nio.charset.StandardCharsets;
 
 import java.util.Locale;
 
+import com.chess.exception.ApiException;
+import com.chess.http.util.JsonUtil;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -19,9 +21,11 @@ public abstract class BaseHandler implements HttpHandler {
     public final void handle(HttpExchange exchange) throws IOException {
         try {
             handleRequest(exchange);
+        } catch (ApiException ex) {
+            sendJson(exchange, ex.getStatusCode(), JsonUtil.error(ex.getMessage()));
         } catch (Exception ex) {
             System.out.println(ex);
-            System.out.println(ex.getMessage());
+            sendJson(exchange, 500, JsonUtil.error("Internal server error."));
         } finally {
             exchange.close();
         }
