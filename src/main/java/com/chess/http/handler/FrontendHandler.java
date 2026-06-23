@@ -3,6 +3,7 @@ package com.chess.http.handler;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -22,7 +23,9 @@ public class FrontendHandler extends BaseHandler {
         exchange.getResponseHeaders().set("Content-Type", "text/html");
         exchange.sendResponseHeaders(200, bytes.length);
 
-        exchange.getResponseBody().write(bytes);
-        exchange.getResponseBody().close();
+
+        try (OutputStream os = exchange.getResponseBody()) {
+            os.write(bytes);
+        }
     }
 }
