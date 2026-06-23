@@ -18,6 +18,6 @@ public class App {
         server.createContext("/style.css", new CssHandler());
         server.createContext("/script.js", new JsHandler());
         server.start();
-        System.out.println("Server started on port 8080");
+        System.out.println("Server started on port 8081");
     }
 }

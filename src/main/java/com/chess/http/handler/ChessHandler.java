@@ -59,6 +59,13 @@ public class ChessHandler extends BaseHandler {
             sendJson(exchange, 200, JsonUtil.board(chessService.getBoard(id)));
             return;
         }
+        if ("DELETE".equalsIgnoreCase(method) && !id.equals("-1")) {
+            chessService.deleteTable(id);
+            sendNoContent(exchange);
+            return;
+        }
+
+        sendMethodNotAllowed(exchange, "GET, POST, PUT, DELETE, OPTIONS");
     }
 
     private char extractTypeFromPath(HttpExchange exchange, String basePath) {
