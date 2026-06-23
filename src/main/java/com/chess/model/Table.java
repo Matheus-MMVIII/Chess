@@ -123,15 +123,17 @@ public class Table {
     //printBoard();
   }
 
-  public void promotePawn(int posLine, int posColumn, char type) {
+  public void promotePawn(int posLine, int posColumn, char promotionType) {
     if (posLine < 0 || posLine > 7 || posColumn < 0 ||posColumn > 7) throw new BadRequestException("Invalid position. ");
+    char type = table[posLine][posColumn].getType();
+    if (type != 'p' && type != 'P') throw new BadRequestException("Invalid piece to promotion. ");
     boolean white = table[posLine][posColumn].getIsWhite();
-    type = white ? Character.toLowerCase(type) : Character.toUpperCase(type);
-    switch (type) {
-      case 'Q', 'q' -> table[posLine][posColumn] = new Queen(type, posLine, posColumn, white, this);
-      case 'R', 'r' -> table[posLine][posColumn] = new Rook(type, posLine, posColumn, white, this);
-      case 'B', 'b' -> table[posLine][posColumn] = new Bishop(type, posLine, posColumn, white, this);
-      case 'H', 'h' -> table[posLine][posColumn] = new Horse(type, posLine, posColumn, white, this);
+    promotionType = white ? Character.toLowerCase(promotionType) : Character.toUpperCase(promotionType);
+    switch (promotionType) {
+      case 'Q', 'q' -> table[posLine][posColumn] = new Queen(promotionType, posLine, posColumn, white, this);
+      case 'R', 'r' -> table[posLine][posColumn] = new Rook(promotionType, posLine, posColumn, white, this);
+      case 'B', 'b' -> table[posLine][posColumn] = new Bishop(promotionType, posLine, posColumn, white, this);
+      case 'H', 'h' -> table[posLine][posColumn] = new Horse(promotionType, posLine, posColumn, white, this);
     }
     //printBoard();
   }
