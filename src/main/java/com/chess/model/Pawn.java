@@ -31,6 +31,9 @@ public class Pawn extends Piece {
 
             if (!table.getPosIsNull(middleLine, column))
                 throw new BadRequestException("Attempt to move a piece over another. ");
+
+            if (column != endColumn)
+                throw new BadRequestException("Invalid movement attempt. ");
         }
 
         if (column != endColumn && table.getPosIsNull(endLine, endColumn))
