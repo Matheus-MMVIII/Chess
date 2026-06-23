@@ -34,4 +34,16 @@ public final class JsonUtil {
                 + "\"id\":\"" + id + "\""
                 + "}";
     }
+
+    public static String error(String message) {
+        return "{\"error\":\"" + escape(message) + "\"}";
+    }
+
+    private static String escape(String value) {
+        return value
+                .replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r");
+    }
 }
