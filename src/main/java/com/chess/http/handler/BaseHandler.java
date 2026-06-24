@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 import com.chess.exception.ApiException;
+import com.chess.exception.MethodNotAllowedException;
 import com.chess.http.util.JsonUtil;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
@@ -29,6 +30,9 @@ public abstract class BaseHandler implements HttpHandler {
 
         try {
             handleRequest(exchange);
+        } catch (MethodNotAllowedException ex) {
+            exchange.getResponseHeaders().add("Allow", "GET");
+            exchange.sendResponseHeaders(405, -1);
         } catch (ApiException ex) {
             sendJson(exchange, ex.getStatusCode(), JsonUtil.error(ex.getMessage()));
         } catch (Exception ex) {

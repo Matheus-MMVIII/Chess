@@ -1,5 +1,6 @@
 package com.chess.http.handler;
 
+import com.chess.exception.MethodNotAllowedException;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
@@ -15,6 +16,10 @@ public class JsHandler extends BaseHandler {
 
     @Override
     public void handleRequest(HttpExchange exchange) throws IOException {
+
+        String method = exchange.getRequestMethod();
+
+        if (!"GET".equalsIgnoreCase(method)) throw new MethodNotAllowedException("");
 
         Path file = Path.of("frontend/script.js");
 

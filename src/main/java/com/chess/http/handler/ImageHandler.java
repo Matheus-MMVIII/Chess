@@ -1,5 +1,6 @@
 package com.chess.http.handler;
 
+import com.chess.exception.MethodNotAllowedException;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
@@ -15,6 +16,11 @@ public class ImageHandler extends BaseHandler {
 
     @Override
     protected void handleRequest(HttpExchange exchange) throws IOException {
+
+        String method = exchange.getRequestMethod();
+
+        if (!"GET".equalsIgnoreCase(method)) throw new MethodNotAllowedException("");
+
         String uri = exchange.getRequestURI().getPath();
 
         String imageName = uri.replace("/images/", "");
