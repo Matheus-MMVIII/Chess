@@ -21,6 +21,12 @@ public class ChessService {
     }
 
     public void deleteTable(String id) {
+        if (id == null || id.isEmpty()) {
+            throw new BadRequestException("Invalid id. ");
+        }
+        if (!games.containsKey(id)) {
+            throw new NotFoundException("Id not found. ");
+        }
         games.get(id).deleteBoard();
         games.remove(id);
     }
@@ -36,10 +42,22 @@ public class ChessService {
     }
 
     public void movePiece(String id, int startLine, int startColumn, int endLine, int endColumn) {
+        if (id == null || id.isEmpty()) {
+            throw new BadRequestException("Invalid id. ");
+        }
+        if (!games.containsKey(id)) {
+            throw new NotFoundException("Id not found. ");
+        }
         games.get(id).move(startLine, startColumn, endLine, endColumn);
     }
 
     public void promotePawn(String id, int line, int column, char type) {
+        if (id == null || id.isEmpty()) {
+            throw new BadRequestException("Invalid id. ");
+        }
+        if (!games.containsKey(id)) {
+            throw new NotFoundException("Id not found. ");
+        }
         games.get(id).promotePawn(line, column, type);
     }
 }
