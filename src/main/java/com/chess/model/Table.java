@@ -125,6 +125,8 @@ public class Table {
 
   public void promotePawn(int posLine, int posColumn, char promotionType) {
     if (posLine < 0 || posLine > 7 || posColumn < 0 ||posColumn > 7) throw new BadRequestException("Invalid position. ");
+    if (table[posLine][posColumn] == null) throw new BadRequestException("Invalid position. ");
+    if (posLine != 0 && posLine != 7) throw new BadRequestException("Invalid position to promote. ");
     char type = table[posLine][posColumn].getType();
     if (type != 'p' && type != 'P') throw new BadRequestException("Invalid piece to promotion. ");
     boolean white = table[posLine][posColumn].getIsWhite();
@@ -134,6 +136,7 @@ public class Table {
       case 'R', 'r' -> table[posLine][posColumn] = new Rook(promotionType, posLine, posColumn, white, this);
       case 'B', 'b' -> table[posLine][posColumn] = new Bishop(promotionType, posLine, posColumn, white, this);
       case 'H', 'h' -> table[posLine][posColumn] = new Horse(promotionType, posLine, posColumn, white, this);
+      default -> throw new BadRequestException("Invalid promotion piece. ");
     }
     //printBoard();
   }
