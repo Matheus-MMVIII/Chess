@@ -10,6 +10,7 @@ import java.util.Locale;
 
 import com.chess.exception.ApiException;
 import com.chess.http.util.JsonUtil;
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -19,6 +20,13 @@ public abstract class BaseHandler implements HttpHandler {
 
     @Override
     public final void handle(HttpExchange exchange) throws IOException {
+        applyDefaultHeaders(exchange);
+
+        if ("OPTIONS".equalsIgnoreCase(exchange.getRequestMethod())) {
+            sendNoContent(exchange);
+            return;
+        }
+
         try {
             handleRequest(exchange);
         } catch (ApiException ex) {
@@ -90,6 +98,16 @@ public abstract class BaseHandler implements HttpHandler {
     public static void sendMethodNotAllowed(HttpExchange exchange, String allowedMethods) throws IOException {
         exchange.getResponseHeaders().set("Allow", allowedMethods);
         sendJson(exchange, 405, error("This method is not permitted."));
+    }
+
+    public static void applyDefaultHeaders(HttpExchange exchange) {
+        Headers headers = exchange.getResponseHeaders();
+        headers.set("Content-Type", "application/json; charset=utf-8");
+        headers.set("Access-Control-Allow-Origin", "*");//"http://localhost:5173");
+        headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        headers.set("Access-Control-Allow-Headers", "Content-Type");
+        headers.set("Referrer-Policy", "no-referrer");
+        headers.set("Cache-Control", "no-store");
     }
 
     public static String error(String message) {

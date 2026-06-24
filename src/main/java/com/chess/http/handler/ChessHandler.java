@@ -19,11 +19,6 @@ public class ChessHandler extends BaseHandler {
 
     @Override
     protected void handleRequest(HttpExchange exchange) throws IOException {
-        Headers headers = exchange.getResponseHeaders();
-        headers.set("Content-Type", "application/json; charset=utf-8");
-        headers.set("Access-Control-Allow-Origin", "*");//"http://localhost:5173");
-        headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        headers.set("Access-Control-Allow-Headers", "Content-Type");
 
         String method = exchange.getRequestMethod();
         String id = extractIdFromPath(exchange, BASE_PATH);
