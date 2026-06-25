@@ -11,7 +11,7 @@ public class King extends Piece {
     public void move(int endLine, int endColumn) {
         basicValidations(endLine, endColumn);
 
-        if (isFirstMove() && (column == (endColumn+2) || column == (endColumn+3) || column == (endColumn-2))) {
+        if (isFirstMove() && Math.abs(endColumn - column) == 2) {
             if (endColumn > column) {
                 if (table.getPieceFirstMove(line, 7)) {
                     table.removePos(line, column);
@@ -23,7 +23,7 @@ public class King extends Piece {
                     return;
                 }
             }else {
-                if (table.getPieceFirstMove(line, 7)) {
+                if (table.getPieceFirstMove(line, 0)) {
                     table.removePos(line, column);
                     table.move(line, 0, endLine, 3);
                     line = endLine;
