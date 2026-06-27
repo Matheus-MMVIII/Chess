@@ -14,6 +14,7 @@ public class King extends Piece {
         if (isFirstMove() && Math.abs(endColumn - column) == 2 && line == endLine) {
             if (endColumn > column) {
                 if (!table.haveFriendPiece(line, 7, getIsWhite())) throw new BadRequestException("Invalid rook attempt.");
+                if (!table.getPosIsNull(line, 6) || !table.getPosIsNull(line, 5)) throw new BadRequestException("Invalid rook attempt. ");
                 if (table.getPieceFirstMove(line, 7)) {
                     table.removePos(line, column);
                     table.move(line, 7, endLine, 5);
@@ -25,6 +26,7 @@ public class King extends Piece {
                 }
             }else {
                 if (!table.haveFriendPiece(line, 0, getIsWhite())) throw new BadRequestException("Invalid rook attempt.");
+                if (!table.getPosIsNull(line, 1) || !table.getPosIsNull(line, 2) || !table.getPosIsNull(line, 3)) throw new BadRequestException("Invalid rook attempt. ");
                 if (table.getPieceFirstMove(line, 0)) {
                     table.removePos(line, column);
                     table.move(line, 0, endLine, 3);

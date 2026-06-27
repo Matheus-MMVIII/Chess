@@ -98,6 +98,10 @@ public class Table {
     return table[posLine][posColumn].isFirstMove();
   }
 
+  public Piece getPiece(int posLine, int posColumn) {
+    return table[posLine][posColumn];
+  }
+
   public boolean haveFriendPiece(int posLine, int posColumn, boolean white) {
     if (table[posLine][posColumn] == null)
       return false;
