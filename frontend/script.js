@@ -16,23 +16,23 @@ const pieces = {
 
 let initialLine = -1;
 let initialColumn = -1;
+let promotionResolver = null;
 let board = [];
 let promotionPiece;
-const baseUrl = "http://localhost:8081/api/chess/";
-let url = "http://localhost:8081/api/chess/";
-if (baseUrl === url) {
-    createBoard();
-}
+const BASE_URL = "http://localhost:8081/api/chess";
+let game_Url = null;
+
+createBoard();
 
 async function createBoard() {
     try {
-        console.log("POST: "+baseUrl)
-        const response = await fetch(baseUrl, {
+        console.log("POST: "+BASE_URL)
+        const response = await fetch(BASE_URL, {
             method: "POST"
         });
         const result = await response.json();
         console.log(result);
-        url += result.id;
+        game_Url = `${BASE_URL}/${result.id}`;
         loadChess();
     } catch (error) {
         console.error(error.message);
@@ -44,8 +44,8 @@ async function loadChess() {
     let tableText = `<div class="pieces">`;
 
     try {
-        console.log("GET: "+url);
-        const response = await fetch(url);
+        console.log("GET: "+game_Url);
+        const response = await fetch(game_Url);
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
         }
@@ -76,7 +76,7 @@ async function loadChess() {
 }
 
 async function movePiece(endLine, endColumn) {
-    let endpoint = url;
+    let endpoint = game_Url;
     console.log(`iLine: ${initialLine}, iColumn: ${initialColumn}, eLine: ${endLine}, eColumn: ${endColumn}`);
     try {
         if (initialLine === -1 || initialColumn === -1) {
@@ -149,7 +149,10 @@ function openPromotionModal(white) {
             whiteContent.style.display = "none";
             blackContent.style.display = "flex";
         }
-        window.resolvePromotion = resolve;
+        promotionResolver = resolve;
+
+        promotionResolver(piece);
+        promotionResolver = null;
     });
 }
 

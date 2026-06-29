@@ -1,1 +1,8 @@
+/home/matheus/Chess/src/test/java/com/chess/http/handler/ChessHttpTest.java
+/home/matheus/Chess/src/test/java/com/chess/http/util/JsonUtilTest.java
+/home/matheus/Chess/src/test/java/com/chess/model/PieceMovementTest.java
+/home/matheus/Chess/src/test/java/com/chess/model/PromotionRulesTest.java
+/home/matheus/Chess/src/test/java/com/chess/model/TableRulesTest.java
+/home/matheus/Chess/src/test/java/com/chess/service/ChessServiceBehaviorTest.java
 /home/matheus/Chess/src/test/java/com/chess/service/ChessServiceTests.java
+/home/matheus/Chess/src/test/java/com/chess/service/CompleteGameTest.java

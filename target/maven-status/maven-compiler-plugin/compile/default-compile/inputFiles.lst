@@ -1,6 +1,7 @@
 /home/matheus/Chess/src/main/java/com/chess/App.java
 /home/matheus/Chess/src/main/java/com/chess/exception/ApiException.java
 /home/matheus/Chess/src/main/java/com/chess/exception/BadRequestException.java
+/home/matheus/Chess/src/main/java/com/chess/exception/MethodNotAllowedException.java
 /home/matheus/Chess/src/main/java/com/chess/exception/NotFoundException.java
 /home/matheus/Chess/src/main/java/com/chess/http/handler/BaseHandler.java
 /home/matheus/Chess/src/main/java/com/chess/http/handler/ChessHandler.java
