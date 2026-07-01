@@ -137,6 +137,42 @@ class TableRulesTest {
     }
 
     @Test
+    void castlingFailsWhenKingIsInCheck() {
+        Table table = emptyBoard();
+        whiteKing(table, 7, 4);
+        whiteRook(table, 7, 7);
+        blackRook(table, 0, 4);
+
+        assertThrows(BadRequestException.class, () -> table.move(7, 4, 7, 6));
+        assertSquare(table, 7, 4, 'k');
+        assertSquare(table, 7, 7, 'r');
+    }
+
+    @Test
+    void castlingFailsWhenKingPassesThroughAttackedSquare() {
+        Table table = emptyBoard();
+        whiteKing(table, 7, 4);
+        whiteRook(table, 7, 7);
+        blackRook(table, 0, 5);
+
+        assertThrows(BadRequestException.class, () -> table.move(7, 4, 7, 6));
+        assertSquare(table, 7, 4, 'k');
+        assertSquare(table, 7, 7, 'r');
+    }
+
+    @Test
+    void castlingFailsWhenDestinationIsAttacked() {
+        Table table = emptyBoard();
+        whiteKing(table, 7, 4);
+        whiteRook(table, 7, 7);
+        blackRook(table, 0, 6);
+
+        assertThrows(BadRequestException.class, () -> table.move(7, 4, 7, 6));
+        assertSquare(table, 7, 4, 'k');
+        assertSquare(table, 7, 7, 'r');
+    }
+
+    @Test
     void kingCannotMoveIntoCheck() {
         Table table = emptyBoard();
         whiteKing(table, 7, 4);
