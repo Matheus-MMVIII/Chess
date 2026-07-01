@@ -120,11 +120,157 @@ public class Table {
     if (startLine < 0 || startLine > 7 || startColumn < 0 || startColumn > 7) throw new BadRequestException("Invalid start position. ");
     if (endLine < 0 || endLine > 7 || endColumn < 0 || endColumn > 7) throw new BadRequestException("Invalid end position. ");
     if (getPosIsNull(startLine, startColumn)) throw new NotFoundException("Piece not found. ");
-    if (table[startLine][startColumn].getIsWhite() != whiteTime) throw new BadRequestException("Is not your turn. ");
-    table[startLine][startColumn].move(endLine, endColumn);
-    whiteTime = !table[endLine][endColumn].getIsWhite();
+    Piece movingPiece = table[startLine][startColumn];
+    if (movingPiece.getIsWhite() != whiteTime) throw new BadRequestException("Is not your turn. ");
+    if (table[endLine][endColumn] instanceof King) throw new BadRequestException("Kings cannot be captured. ");
+
+    boolean movingPieceFirstMove = movingPiece.isFirstMove();
+    Piece capturedPiece = table[endLine][endColumn];
+    boolean capturedPieceFirstMove = capturedPiece != null && capturedPiece.isFirstMove();
+    boolean castlingMove = isCastlingMove(movingPiece, startLine, startColumn, endLine, endColumn);
+    Piece castlingRook = null;
+    int castlingRookStartColumn = -1;
+    int castlingRookEndColumn = -1;
+    boolean castlingRookFirstMove = false;
+
+    if (castlingMove) {
+      validateCastlingSafety(startLine, startColumn, endColumn, movingPiece.getIsWhite());
+      boolean kingSide = endColumn > startColumn;
+      castlingRookStartColumn = kingSide ? 7 : 0;
+      castlingRookEndColumn = kingSide ? 5 : 3;
+      castlingRook = table[startLine][castlingRookStartColumn];
+      castlingRookFirstMove = castlingRook != null && castlingRook.isFirstMove();
+    }
+
+    movingPiece.move(endLine, endColumn);
+
+    if (isKingInCheck(movingPiece.getIsWhite())) {
+      restoreMove(movingPiece, startLine, startColumn, movingPieceFirstMove,
+              capturedPiece, endLine, endColumn, capturedPieceFirstMove,
+              castlingRook, castlingRookStartColumn, castlingRookEndColumn, castlingRookFirstMove);
+      throw new BadRequestException("Move leaves the king in check. ");
+    }
+
+    whiteTime = !movingPiece.getIsWhite();
     //System.out.println("TurnWhite: "+whiteTime);
     //printBoard();
+  }
+
+  public boolean isKingInCheck(boolean white) {
+    int[] kingPosition = findKing(white);
+    if (kingPosition == null) {
+      return false;
+    }
+
+    return isSquareUnderAttack(kingPosition[0], kingPosition[1], !white);
+  }
+
+  private boolean isCastlingMove(Piece piece, int startLine, int startColumn, int endLine, int endColumn) {
+    return piece instanceof King
+            && startLine == endLine
+            && Math.abs(endColumn - startColumn) == 2;
+  }
+
+  private void validateCastlingSafety(int line, int startColumn, int endColumn, boolean white) {
+    if (isKingInCheck(white)) {
+      throw new BadRequestException("Cannot castle while in check. ");
+    }
+
+    int direction = Integer.compare(endColumn, startColumn);
+    for (int column = startColumn + direction; column != endColumn + direction; column += direction) {
+      if (isSquareUnderAttack(line, column, !white)) {
+        throw new BadRequestException("Cannot castle through check. ");
+      }
+    }
+  }
+
+  private void restoreMove(Piece movingPiece, int startLine, int startColumn, boolean movingPieceFirstMove,
+                           Piece capturedPiece, int endLine, int endColumn, boolean capturedPieceFirstMove,
+                           Piece castlingRook, int castlingRookStartColumn, int castlingRookEndColumn,
+                           boolean castlingRookFirstMove) {
+    table[startLine][startColumn] = movingPiece;
+    table[endLine][endColumn] = capturedPiece;
+    movingPiece.setPosition(startLine, startColumn);
+    movingPiece.setFirstMove(movingPieceFirstMove);
+
+    if (capturedPiece != null) {
+      capturedPiece.setPosition(endLine, endColumn);
+      capturedPiece.setFirstMove(capturedPieceFirstMove);
+    }
+
+    if (castlingRook != null) {
+      table[startLine][castlingRookEndColumn] = null;
+      table[startLine][castlingRookStartColumn] = castlingRook;
+      castlingRook.setPosition(startLine, castlingRookStartColumn);
+      castlingRook.setFirstMove(castlingRookFirstMove);
+    }
+  }
+
+  private int[] findKing(boolean white) {
+    for (int line = 0; line < table.length; line++) {
+      for (int column = 0; column < table[line].length; column++) {
+        Piece piece = table[line][column];
+        if (piece instanceof King && piece.getIsWhite() == white) {
+          return new int[]{line, column};
+        }
+      }
+    }
+
+    return null;
+  }
+
+  private boolean isSquareUnderAttack(int line, int column, boolean byWhite) {
+    for (int attackerLine = 0; attackerLine < table.length; attackerLine++) {
+      for (int attackerColumn = 0; attackerColumn < table[attackerLine].length; attackerColumn++) {
+        Piece piece = table[attackerLine][attackerColumn];
+        if (piece != null
+                && piece.getIsWhite() == byWhite
+                && pieceCanAttackSquare(piece, attackerLine, attackerColumn, line, column)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  private boolean pieceCanAttackSquare(Piece piece, int startLine, int startColumn, int targetLine, int targetColumn) {
+    int lineDiff = Math.abs(targetLine - startLine);
+    int columnDiff = Math.abs(targetColumn - startColumn);
+
+    if (lineDiff == 0 && columnDiff == 0) {
+      return false;
+    }
+
+    return switch (Character.toLowerCase(piece.getType())) {
+      case 'p' -> {
+        int direction = piece.getIsWhite() ? -1 : 1;
+        yield targetLine == startLine + direction && columnDiff == 1;
+      }
+      case 'h' -> (lineDiff == 2 && columnDiff == 1) || (lineDiff == 1 && columnDiff == 2);
+      case 'b' -> lineDiff == columnDiff && pathIsClear(startLine, startColumn, targetLine, targetColumn);
+      case 'r' -> (startLine == targetLine || startColumn == targetColumn)
+              && pathIsClear(startLine, startColumn, targetLine, targetColumn);
+      case 'q' -> ((startLine == targetLine || startColumn == targetColumn) || lineDiff == columnDiff)
+              && pathIsClear(startLine, startColumn, targetLine, targetColumn);
+      case 'k' -> Math.max(lineDiff, columnDiff) == 1;
+      default -> false;
+    };
+  }
+
+  private boolean pathIsClear(int startLine, int startColumn, int targetLine, int targetColumn) {
+    int lineStep = Integer.compare(targetLine, startLine);
+    int columnStep = Integer.compare(targetColumn, startColumn);
+
+    for (int line = startLine + lineStep, column = startColumn + columnStep;
+         line != targetLine || column != targetColumn;
+         line += lineStep, column += columnStep) {
+      if (!getPosIsNull(line, column)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   public void promotePawn(int posLine, int posColumn, char promotionType) {
