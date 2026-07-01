@@ -37,6 +37,15 @@ public abstract class Piece {
         return firstMove;
     }
 
+    void setPosition(int line, int column) {
+        this.line = line;
+        this.column = column;
+    }
+
+    void setFirstMove(boolean firstMove) {
+        this.firstMove = firstMove;
+    }
+
     public abstract void move(int endLine, int endColumn);
 
     public boolean isInsideBoard(int line, int column) {
@@ -48,11 +57,11 @@ public abstract class Piece {
     }
 
     protected void basicValidations(int endLine, int endColumn) {
-        if (haveFriend(endLine, endColumn))
-            throw new BadRequestException("Attempt to move a piece inside another friend piece. ");
-
         if (!isInsideBoard(endLine, endColumn))
             throw new BadRequestException("Attempt to move a piece outside board. ");
+
+        if (haveFriend(endLine, endColumn))
+            throw new BadRequestException("Attempt to move a piece inside another friend piece. ");
     }
 
 }

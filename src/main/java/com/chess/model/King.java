@@ -66,7 +66,10 @@ public class King extends Piece {
         }
 
         table.removePos(line, column);
-        table.move(line, rookColumn, line, rookDestination);
+        table.removePos(line, rookColumn);
+        rook.setPosition(line, rookDestination);
+        table.registerPos(line, rookDestination, rook);
+        rook.firstMove();
 
         column = endColumn;
 
