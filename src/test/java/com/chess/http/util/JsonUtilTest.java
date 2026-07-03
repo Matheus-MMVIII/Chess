@@ -1,5 +1,6 @@
 package com.chess.http.util;
 
+import com.chess.model.GameStatus;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -32,6 +33,17 @@ class JsonUtilTest {
         String json = JsonUtil.jsonId("game-123");
 
         assertTrue(json.contains("\"id\":\"game-123\""));
+    }
+
+    @Test
+    void statusSerializesGameState() {
+        String json = JsonUtil.status(GameStatus.CHECKMATE, "black", "white");
+
+        assertTrue(json.contains("\"status\":\"CHECKMATE\""));
+        assertTrue(json.contains("\"gameOver\":true"));
+        assertTrue(json.contains("\"draw\":false"));
+        assertTrue(json.contains("\"turn\":\"black\""));
+        assertTrue(json.contains("\"winner\":\"white\""));
     }
 
     @Test
