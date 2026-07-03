@@ -3,9 +3,17 @@ package com.chess.model;
 import com.chess.exception.BadRequestException;
 import com.chess.exception.NotFoundException;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Table {
   private Piece[][] table;
   private boolean whiteTime = true;
+  private GameStatus gameStatus = GameStatus.ACTIVE;
+  private Boolean winnerWhite;
+  private int halfmoveClock = 0;
+  private boolean promotionPending = false;
+  private final Map<String, Integer> positionOccurrences = new HashMap<>();
 
   //k = King
   //q = queen
@@ -17,6 +25,7 @@ public class Table {
   public Table() {
     table = new Piece[8][8];
     generateBoard();
+    recordCurrentPosition();
     //printBoard();
   }
 
@@ -33,6 +42,30 @@ public class Table {
       }
     }
     return board;
+  }
+
+  public GameStatus getGameStatus() {
+    return gameStatus;
+  }
+
+  public boolean isGameOver() {
+    return gameStatus.isGameOver();
+  }
+
+  public boolean isDraw() {
+    return gameStatus.isDraw();
+  }
+
+  public String getWinner() {
+    if (winnerWhite == null) {
+      return "";
+    }
+
+    return winnerWhite ? "white" : "black";
+  }
+
+  public String getTurn() {
+    return whiteTime ? "white" : "black";
   }
 
   private void printBoard() {
@@ -117,6 +150,8 @@ public class Table {
   }
 
   public synchronized void move(int startLine, int startColumn, int endLine, int endColumn) {
+    if (gameStatus.isGameOver()) throw new BadRequestException("Game is over. ");
+    if (promotionPending) throw new BadRequestException("Promote the pawn before moving another piece. ");
     if (startLine < 0 || startLine > 7 || startColumn < 0 || startColumn > 7) throw new BadRequestException("Invalid start position. ");
     if (endLine < 0 || endLine > 7 || endColumn < 0 || endColumn > 7) throw new BadRequestException("Invalid end position. ");
     if (getPosIsNull(startLine, startColumn)) throw new NotFoundException("Piece not found. ");
@@ -124,34 +159,28 @@ public class Table {
     if (movingPiece.getIsWhite() != whiteTime) throw new BadRequestException("Is not your turn. ");
     if (table[endLine][endColumn] instanceof King) throw new BadRequestException("Kings cannot be captured. ");
 
-    boolean movingPieceFirstMove = movingPiece.isFirstMove();
     Piece capturedPiece = table[endLine][endColumn];
-    boolean capturedPieceFirstMove = capturedPiece != null && capturedPiece.isFirstMove();
-    boolean castlingMove = isCastlingMove(movingPiece, startLine, startColumn, endLine, endColumn);
-    Piece castlingRook = null;
-    int castlingRookStartColumn = -1;
-    int castlingRookEndColumn = -1;
-    boolean castlingRookFirstMove = false;
+    MoveSnapshot snapshot = createMoveSnapshot(movingPiece, startLine, startColumn, endLine, endColumn);
 
-    if (castlingMove) {
+    if (snapshot.castlingMove) {
       validateCastlingSafety(startLine, startColumn, endColumn, movingPiece.getIsWhite());
-      boolean kingSide = endColumn > startColumn;
-      castlingRookStartColumn = kingSide ? 7 : 0;
-      castlingRookEndColumn = kingSide ? 5 : 3;
-      castlingRook = table[startLine][castlingRookStartColumn];
-      castlingRookFirstMove = castlingRook != null && castlingRook.isFirstMove();
     }
-
     movingPiece.move(endLine, endColumn);
 
     if (isKingInCheck(movingPiece.getIsWhite())) {
-      restoreMove(movingPiece, startLine, startColumn, movingPieceFirstMove,
-              capturedPiece, endLine, endColumn, capturedPieceFirstMove,
-              castlingRook, castlingRookStartColumn, castlingRookEndColumn, castlingRookFirstMove);
+      restoreMove(snapshot);
       throw new BadRequestException("Move leaves the king in check. ");
     }
 
+    updateHalfmoveClock(movingPiece, capturedPiece);
     whiteTime = !movingPiece.getIsWhite();
+    promotionPending = isPawnOnPromotionRank(movingPiece);
+    if (promotionPending) {
+      gameStatus = GameStatus.PROMOTION_REQUIRED;
+      winnerWhite = null;
+    } else {
+      updateGameStatusAfterTurn();
+    }
     //System.out.println("TurnWhite: "+whiteTime);
     //printBoard();
   }
@@ -171,6 +200,30 @@ public class Table {
             && Math.abs(endColumn - startColumn) == 2;
   }
 
+  private MoveSnapshot createMoveSnapshot(Piece movingPiece, int startLine, int startColumn, int endLine, int endColumn) {
+    boolean castlingMove = isCastlingMove(movingPiece, startLine, startColumn, endLine, endColumn);
+    boolean kingSide = endColumn > startColumn;
+    int castlingRookStartColumn = castlingMove ? (kingSide ? 7 : 0) : -1;
+    int castlingRookEndColumn = castlingMove ? (kingSide ? 5 : 3) : -1;
+    Piece castlingRook = castlingMove ? table[startLine][castlingRookStartColumn] : null;
+
+    return new MoveSnapshot(
+            movingPiece,
+            startLine,
+            startColumn,
+            movingPiece.isFirstMove(),
+            table[endLine][endColumn],
+            endLine,
+            endColumn,
+            table[endLine][endColumn] != null && table[endLine][endColumn].isFirstMove(),
+            castlingMove,
+            castlingRook,
+            castlingRookStartColumn,
+            castlingRookEndColumn,
+            castlingRook != null && castlingRook.isFirstMove()
+    );
+  }
+
   private void validateCastlingSafety(int line, int startColumn, int endColumn, boolean white) {
     if (isKingInCheck(white)) {
       throw new BadRequestException("Cannot castle while in check. ");
@@ -184,25 +237,22 @@ public class Table {
     }
   }
 
-  private void restoreMove(Piece movingPiece, int startLine, int startColumn, boolean movingPieceFirstMove,
-                           Piece capturedPiece, int endLine, int endColumn, boolean capturedPieceFirstMove,
-                           Piece castlingRook, int castlingRookStartColumn, int castlingRookEndColumn,
-                           boolean castlingRookFirstMove) {
-    table[startLine][startColumn] = movingPiece;
-    table[endLine][endColumn] = capturedPiece;
-    movingPiece.setPosition(startLine, startColumn);
-    movingPiece.setFirstMove(movingPieceFirstMove);
+  private void restoreMove(MoveSnapshot snapshot) {
+    table[snapshot.startLine][snapshot.startColumn] = snapshot.movingPiece;
+    table[snapshot.endLine][snapshot.endColumn] = snapshot.capturedPiece;
+    snapshot.movingPiece.setPosition(snapshot.startLine, snapshot.startColumn);
+    snapshot.movingPiece.setFirstMove(snapshot.movingPieceFirstMove);
 
-    if (capturedPiece != null) {
-      capturedPiece.setPosition(endLine, endColumn);
-      capturedPiece.setFirstMove(capturedPieceFirstMove);
+    if (snapshot.capturedPiece != null) {
+      snapshot.capturedPiece.setPosition(snapshot.endLine, snapshot.endColumn);
+      snapshot.capturedPiece.setFirstMove(snapshot.capturedPieceFirstMove);
     }
 
-    if (castlingRook != null) {
-      table[startLine][castlingRookEndColumn] = null;
-      table[startLine][castlingRookStartColumn] = castlingRook;
-      castlingRook.setPosition(startLine, castlingRookStartColumn);
-      castlingRook.setFirstMove(castlingRookFirstMove);
+    if (snapshot.castlingRook != null) {
+      table[snapshot.startLine][snapshot.castlingRookEndColumn] = null;
+      table[snapshot.startLine][snapshot.castlingRookStartColumn] = snapshot.castlingRook;
+      snapshot.castlingRook.setPosition(snapshot.startLine, snapshot.castlingRookStartColumn);
+      snapshot.castlingRook.setFirstMove(snapshot.castlingRookFirstMove);
     }
   }
 
@@ -273,7 +323,194 @@ public class Table {
     return true;
   }
 
+  private void updateHalfmoveClock(Piece movingPiece, Piece capturedPiece) {
+    if (movingPiece instanceof Pawn || capturedPiece != null) {
+      halfmoveClock = 0;
+    } else {
+      halfmoveClock++;
+    }
+  }
+
+  private boolean isPawnOnPromotionRank(Piece piece) {
+    return piece instanceof Pawn && (piece.line == 0 || piece.line == 7);
+  }
+
+  private void updateGameStatusAfterTurn() {
+    winnerWhite = null;
+    if (!bothKingsPresent()) {
+      gameStatus = GameStatus.ACTIVE;
+      return;
+    }
+
+    String positionKey = currentPositionKey();
+    recordPosition(positionKey);
+
+    boolean currentKingInCheck = isKingInCheck(whiteTime);
+    if (!hasAnyLegalMove(whiteTime)) {
+      if (currentKingInCheck) {
+        gameStatus = GameStatus.CHECKMATE;
+        winnerWhite = !whiteTime;
+      } else {
+        gameStatus = GameStatus.STALEMATE;
+      }
+      return;
+    }
+
+    if (hasInsufficientMaterial()) {
+      gameStatus = GameStatus.INSUFFICIENT_MATERIAL;
+      return;
+    }
+
+    if (halfmoveClock >= 100) {
+      gameStatus = GameStatus.FIFTY_MOVE_RULE;
+      return;
+    }
+
+    if (positionOccurrences.getOrDefault(positionKey, 0) >= 3) {
+      gameStatus = GameStatus.THREEFOLD_REPETITION;
+      return;
+    }
+
+    gameStatus = currentKingInCheck ? GameStatus.CHECK : GameStatus.ACTIVE;
+  }
+
+  private boolean hasAnyLegalMove(boolean white) {
+    for (int startLine = 0; startLine < table.length; startLine++) {
+      for (int startColumn = 0; startColumn < table[startLine].length; startColumn++) {
+        Piece piece = table[startLine][startColumn];
+        if (piece == null || piece.getIsWhite() != white) {
+          continue;
+        }
+
+        for (int endLine = 0; endLine < table.length; endLine++) {
+          for (int endColumn = 0; endColumn < table[endLine].length; endColumn++) {
+            if (canMoveLegally(startLine, startColumn, endLine, endColumn, white)) {
+              return true;
+            }
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
+  private boolean canMoveLegally(int startLine, int startColumn, int endLine, int endColumn, boolean white) {
+    Piece movingPiece = table[startLine][startColumn];
+    if (movingPiece == null || movingPiece.getIsWhite() != white || table[endLine][endColumn] instanceof King) {
+      return false;
+    }
+
+    MoveSnapshot snapshot = createMoveSnapshot(movingPiece, startLine, startColumn, endLine, endColumn);
+    try {
+      if (snapshot.castlingMove) {
+        validateCastlingSafety(startLine, startColumn, endColumn, white);
+      }
+      movingPiece.move(endLine, endColumn);
+      boolean legal = !isKingInCheck(white);
+      restoreMove(snapshot);
+      return legal;
+    } catch (BadRequestException ex) {
+      restoreMove(snapshot);
+      return false;
+    }
+  }
+
+  private boolean hasInsufficientMaterial() {
+    int minorPieces = 0;
+    int bishops = 0;
+    int knights = 0;
+    int bishopSquareColor = -1;
+
+    for (int line = 0; line < table.length; line++) {
+      for (int column = 0; column < table[line].length; column++) {
+        Piece piece = table[line][column];
+        if (piece == null || piece instanceof King) {
+          continue;
+        }
+
+        char type = Character.toLowerCase(piece.getType());
+        if (type == 'q' || type == 'r' || type == 'p') {
+          return false;
+        }
+
+        if (type == 'h') {
+          knights++;
+          minorPieces++;
+        } else if (type == 'b') {
+          bishops++;
+          minorPieces++;
+          int currentSquareColor = (line + column) % 2;
+          if (bishopSquareColor == -1) {
+            bishopSquareColor = currentSquareColor;
+          } else if (bishopSquareColor != currentSquareColor) {
+            return false;
+          }
+        }
+      }
+    }
+
+    if (minorPieces == 0) {
+      return true;
+    }
+
+    if (minorPieces == 1 && (bishops == 1 || knights == 1)) {
+      return true;
+    }
+
+    return knights == 0 && bishops > 0;
+  }
+
+  private boolean bothKingsPresent() {
+    return findKing(true) != null && findKing(false) != null;
+  }
+
+  private void recordCurrentPosition() {
+    recordPosition(currentPositionKey());
+  }
+
+  private void recordPosition(String positionKey) {
+    positionOccurrences.put(positionKey, positionOccurrences.getOrDefault(positionKey, 0) + 1);
+  }
+
+  private String currentPositionKey() {
+    StringBuilder key = new StringBuilder(80);
+    for (int line = 0; line < table.length; line++) {
+      for (int column = 0; column < table[line].length; column++) {
+        Piece piece = table[line][column];
+        key.append(piece == null ? '.' : piece.getType());
+      }
+    }
+
+    key.append(whiteTime ? 'w' : 'b');
+    key.append(castlingRightsKey());
+    return key.toString();
+  }
+
+  private String castlingRightsKey() {
+    StringBuilder rights = new StringBuilder(4);
+    appendCastlingRight(rights, true, 7, 7, 'K');
+    appendCastlingRight(rights, true, 7, 0, 'Q');
+    appendCastlingRight(rights, false, 0, 7, 'k');
+    appendCastlingRight(rights, false, 0, 0, 'q');
+    return rights.toString();
+  }
+
+  private void appendCastlingRight(StringBuilder rights, boolean white, int line, int rookColumn, char marker) {
+    Piece king = table[line][4];
+    Piece rook = table[line][rookColumn];
+    if (king instanceof King
+            && rook instanceof Rook
+            && king.getIsWhite() == white
+            && rook.getIsWhite() == white
+            && king.isFirstMove()
+            && rook.isFirstMove()) {
+      rights.append(marker);
+    }
+  }
+
   public void promotePawn(int posLine, int posColumn, char promotionType) {
+    if (gameStatus.isGameOver()) throw new BadRequestException("Game is over. ");
     if (posLine < 0 || posLine > 7 || posColumn < 0 ||posColumn > 7) throw new BadRequestException("Invalid position. ");
     if (table[posLine][posColumn] == null) throw new BadRequestException("Invalid position. ");
     if (posLine != 0 && posLine != 7) throw new BadRequestException("Invalid position to promote. ");
@@ -288,6 +525,43 @@ public class Table {
       case 'H', 'h' -> table[posLine][posColumn] = new Horse(promotionType, posLine, posColumn, white, this);
       default -> throw new BadRequestException("Invalid promotion piece. ");
     }
+    promotionPending = false;
+    updateGameStatusAfterTurn();
     //printBoard();
+  }
+
+  private static class MoveSnapshot {
+    private final Piece movingPiece;
+    private final int startLine;
+    private final int startColumn;
+    private final boolean movingPieceFirstMove;
+    private final Piece capturedPiece;
+    private final int endLine;
+    private final int endColumn;
+    private final boolean capturedPieceFirstMove;
+    private final boolean castlingMove;
+    private final Piece castlingRook;
+    private final int castlingRookStartColumn;
+    private final int castlingRookEndColumn;
+    private final boolean castlingRookFirstMove;
+
+    private MoveSnapshot(Piece movingPiece, int startLine, int startColumn, boolean movingPieceFirstMove,
+                         Piece capturedPiece, int endLine, int endColumn, boolean capturedPieceFirstMove,
+                         boolean castlingMove, Piece castlingRook, int castlingRookStartColumn,
+                         int castlingRookEndColumn, boolean castlingRookFirstMove) {
+      this.movingPiece = movingPiece;
+      this.startLine = startLine;
+      this.startColumn = startColumn;
+      this.movingPieceFirstMove = movingPieceFirstMove;
+      this.capturedPiece = capturedPiece;
+      this.endLine = endLine;
+      this.endColumn = endColumn;
+      this.capturedPieceFirstMove = capturedPieceFirstMove;
+      this.castlingMove = castlingMove;
+      this.castlingRook = castlingRook;
+      this.castlingRookStartColumn = castlingRookStartColumn;
+      this.castlingRookEndColumn = castlingRookEndColumn;
+      this.castlingRookFirstMove = castlingRookFirstMove;
+    }
   }
 }
