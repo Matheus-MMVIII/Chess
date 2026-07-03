@@ -1,5 +1,7 @@
 package com.chess.http.util;
 
+import com.chess.model.GameStatus;
+
 public final class JsonUtil {
 
     private JsonUtil() {
@@ -32,6 +34,16 @@ public final class JsonUtil {
     public static String jsonId(String id) {
         return "{"
                 + "\"id\":\"" + id + "\""
+                + "}";
+    }
+
+    public static String status(GameStatus status, String turn, String winner) {
+        return "{"
+                + "\"status\":\"" + status.name() + "\","
+                + "\"gameOver\":" + status.isGameOver() + ","
+                + "\"draw\":" + status.isDraw() + ","
+                + "\"turn\":\"" + escape(turn) + "\","
+                + "\"winner\":" + (winner == null || winner.isEmpty() ? "null" : "\"" + escape(winner) + "\"")
                 + "}";
     }
 
