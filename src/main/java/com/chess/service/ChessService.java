@@ -2,6 +2,7 @@ package com.chess.service;
 
 import com.chess.exception.BadRequestException;
 import com.chess.exception.NotFoundException;
+import com.chess.model.GameStatus;
 import com.chess.model.Table;
 
 import java.util.Map;
@@ -32,32 +33,44 @@ public class ChessService {
     }
 
     public String[][] getBoard(String id) {
-        if (id == null || id.isEmpty()) {
-            throw new BadRequestException("Invalid id. ");
-        }
-        if (!games.containsKey(id)) {
-            throw new NotFoundException("Id not found. ");
-        }
-        return games.get(id).getBoard();
+        return getTable(id).getBoard();
+    }
+
+    public GameStatus getGameStatus(String id) {
+        return getTable(id).getGameStatus();
+    }
+
+    public boolean isGameOver(String id) {
+        return getTable(id).isGameOver();
+    }
+
+    public boolean isDraw(String id) {
+        return getTable(id).isDraw();
+    }
+
+    public String getWinner(String id) {
+        return getTable(id).getWinner();
+    }
+
+    public String getTurn(String id) {
+        return getTable(id).getTurn();
     }
 
     public void movePiece(String id, int startLine, int startColumn, int endLine, int endColumn) {
-        if (id == null || id.isEmpty()) {
-            throw new BadRequestException("Invalid id. ");
-        }
-        if (!games.containsKey(id)) {
-            throw new NotFoundException("Id not found. ");
-        }
-        games.get(id).move(startLine, startColumn, endLine, endColumn);
+        getTable(id).move(startLine, startColumn, endLine, endColumn);
     }
 
     public void promotePawn(String id, int line, int column, char type) {
+        getTable(id).promotePawn(line, column, type);
+    }
+
+    private Table getTable(String id) {
         if (id == null || id.isEmpty()) {
             throw new BadRequestException("Invalid id. ");
         }
         if (!games.containsKey(id)) {
             throw new NotFoundException("Id not found. ");
         }
-        games.get(id).promotePawn(line, column, type);
+        return games.get(id);
     }
 }
