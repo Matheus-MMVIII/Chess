@@ -200,6 +200,62 @@ class TableRulesTest {
         assertThrows(BadRequestException.class, () -> table.move(3, 4, 0, 4));
     }
 
+    @Test
+    void checkmateEndsGameWithWinner() {
+        Table table = emptyBoard();
+        blackKing(table, 0, 7);
+        whiteQueen(table, 1, 5);
+        whiteKing(table, 2, 5);
+
+        table.move(1, 5, 1, 6);
+
+        assertEquals(GameStatus.CHECKMATE, table.getGameStatus());
+        assertEquals("white", table.getWinner());
+        assertThrows(BadRequestException.class, () -> table.move(0, 7, 1, 6));
+    }
+
+    @Test
+    void stalemateEndsGameAsDraw() {
+        Table table = emptyBoard();
+        blackKing(table, 0, 7);
+        whiteQueen(table, 1, 4);
+        whiteKing(table, 2, 6);
+
+        table.move(1, 4, 1, 5);
+
+        assertEquals(GameStatus.STALEMATE, table.getGameStatus());
+        assertEquals("", table.getWinner());
+    }
+
+    @Test
+    void kingAgainstKingEndsByInsufficientMaterial() {
+        Table table = emptyBoard();
+        blackKing(table, 0, 7);
+        whiteKing(table, 7, 0);
+
+        table.move(7, 0, 6, 0);
+
+        assertEquals(GameStatus.INSUFFICIENT_MATERIAL, table.getGameStatus());
+        assertEquals("", table.getWinner());
+    }
+
+    @Test
+    void samePositionThreeTimesEndsByRepetition() {
+        Table table = new Table();
+
+        table.move(7, 6, 5, 5);
+        table.move(0, 6, 2, 5);
+        table.move(5, 5, 7, 6);
+        table.move(2, 5, 0, 6);
+        table.move(7, 6, 5, 5);
+        table.move(0, 6, 2, 5);
+        table.move(5, 5, 7, 6);
+        table.move(2, 5, 0, 6);
+
+        assertEquals(GameStatus.THREEFOLD_REPETITION, table.getGameStatus());
+        assertEquals("", table.getWinner());
+    }
+
     private static Table emptyBoard() {
         Table table = new Table();
         for (int line = 0; line < 8; line++) {
