@@ -2,6 +2,7 @@ package com.chess.service;
 
 import com.chess.exception.BadRequestException;
 import com.chess.exception.NotFoundException;
+import com.chess.model.GameStatus;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -95,6 +96,16 @@ class ChessServiceBehaviorTest {
 
         assertEquals(".", chessService.getBoard(id)[6][4]);
         assertEquals("p", chessService.getBoard(id)[4][4]);
+    }
+
+    @Test
+    void newGameStartsActiveWithWhiteToMove() {
+        ChessService chessService = new ChessService();
+        String id = chessService.createTable();
+
+        assertEquals(GameStatus.ACTIVE, chessService.getGameStatus(id));
+        assertEquals("white", chessService.getTurn(id));
+        assertEquals("", chessService.getWinner(id));
     }
 
     @Test
