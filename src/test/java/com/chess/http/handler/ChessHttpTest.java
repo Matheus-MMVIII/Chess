@@ -85,6 +85,19 @@ class ChessHttpTest {
     }
 
     @Test
+    void statusEndpointReturnsCurrentGameStatus() throws Exception {
+        String id = createGame();
+
+        HttpResponse<String> get = send(HttpRequest.newBuilder(uri("/api/chess/" + id + "/status")).GET());
+
+        assertEquals(200, get.statusCode());
+        assertTrue(get.body().contains("\"status\":\"ACTIVE\""));
+        assertTrue(get.body().contains("\"gameOver\":false"));
+        assertTrue(get.body().contains("\"draw\":false"));
+        assertTrue(get.body().contains("\"turn\":\"white\""));
+    }
+
+    @Test
     void promotionEndpointMovesAndPromotesPawn() throws Exception {
         String id = createGame();
         playWhitePromotionPathOverHttp(id);
